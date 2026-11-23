@@ -7,69 +7,68 @@
 <main>
 <section><h2>Cómo leer esta página</h2>
 <ul>
-<li><b>Prompts de construcción</b>: los encargos con los que se construyó la app. Un orquestador (Jarvis) recibía el pedido del autor y lo pasaba como encargo a un agente de código (fors); ambos son agentes de Hermes sobre Claude. Van en orden, con el resultado de cada uno en el repo.</li>
-<li><b>Prompts del producto</b>: los que el backend envía a los modelos en cada cuento, copiados del código de <code>main</code> (<code>b4d9946</code>).</li>
-<li>Los textos son literales. Solo se reemplazaron el nombre del autor («el autor»), su usuario y sus rutas (<code>&lt;usuario&gt;</code>, <code>&lt;repositorios&gt;</code>) y los nombres de otros integrantes (<code>&lt;integrante 1&gt;</code>, <code>&lt;integrante 2&gt;</code>). Ningún prompt contiene claves.</li>
-<li>Los encargos 01 a 03 están también en el repo, en <a href="https://github.com/Josuehmz/storydraw/tree/main/docs/prompts">docs/prompts</a>.</li>
-<li>No están aquí: los cambios que el orquestador hizo él mismo (moderación con Llama Guard, PR #19 y #20; integración del MVP web) ni el código que aportaron otros integrantes del equipo en sus ramas; sus prompts no quedaron en este historial.</li>
+<li><b>Prompts de construcción</b>: los pedidos que se le dieron a un asistente de IA de programación para construir la app, en orden y con el resultado de cada uno en el repositorio.</li>
+<li><b>Prompts del producto</b>: los que el backend envía a los modelos en cada cuento, copiados del código de la versión 0.2.0.</li>
+<li>Los textos son literales. En esta versión pública se reemplazaron el nombre del autor, los nombres de otros integrantes y de los asistentes, y las rutas de archivos; y se omitieron las líneas sobre límites o configuración del proveedor de IA. Ningún prompt contiene claves.</li>
+<li>No están aquí los cambios que hicieron directamente otras personas del equipo en sus ramas.</li>
 </ul></section>
 <section id="construccion"><h2>Prompts de construcción (20)</h2>
 <p>Toca cada uno para abrirlo.</p>
-<details id="c01"><summary>01 · 2026-10-18 · Implementación inicial desde cero (backend, app, repo)</summary><p class="fuente">Resultado: PR #1</p><pre>Encargo de Jarvis para fors. El autor lo aprobó el 2026-10-17. Trabaja con autonomía hasta terminar; no hagas preguntas salvo que algo falle dos veces.
+<details id="c01"><summary>Prompt 01 · Implementación inicial desde cero (backend, app, repo) <span class="fuente">(2026-10-18)</span></summary><p class="fuente">Resultado: PR #1</p><pre>Prompt 01 · Implementación inicial desde cero (backend, app, repo). El autor lo aprobó el 2026-10-17. Trabaja con autonomía hasta terminar; no hagas preguntas salvo que algo falle dos veces.
 
 # Objetivo
 Implementar StoryDraw DESDE CERO, siguiendo los diagramas de arquitectura del autor, en un repo nuevo, y subirlo.
 El código de `personal/Draw/` es de un laboratorio antiguo: NO se usa, NO se copia y NO se toca (queda como archivo).
 
-# Fuente de verdad (léela primero; manda sobre el vault y sobre Draw/)
-- `C:/Users/&lt;usuario&gt;/Downloads/arquitectura/arquitectura-completa.png` (vista única) y su `.excalidraw`
-- `C:/Users/&lt;usuario&gt;/Downloads/arquitectura/uml-despliegue.excalidraw` y `uml-componentes-estricto.excalidraw` (los textos están en el JSON, en los elementos de tipo text)
-- `C:/Users/&lt;usuario&gt;/Downloads/arquitectura/Analisis de costos - StoryDraw.docx`
-- `C:/Users/&lt;usuario&gt;/Downloads/arquitectura-cuentos-ilustrados.architecture.json`
-- Contexto adicional: `C:/Users/&lt;usuario&gt;/Downloads/Taller 2 - SWNT - StoryDraw.docx` (requisitos RF/RNF, si los hay)
+# Fuente de verdad (léela primero; manda sobre las notas y sobre Draw/)
+- `&lt;ruta&gt;` (vista única) y su `.excalidraw`
+- `&lt;ruta&gt;` y `uml-componentes-estricto.excalidraw` (los textos están en el JSON, en los elementos de tipo text)
+- `&lt;ruta&gt;`
+- `&lt;ruta&gt;`
+- Contexto adicional: `&lt;ruta&gt;` (requisitos RF/RNF, si los hay)
 
 # Decisiones del autor (no se discuten)
 1. **Groq ya NO se usa.** **OpenAI para todo**: visión, texto (cuento), moderación e imagen (GPT Image 1 Mini, 1024x1024, calidad baja), con una sola clave `OPENAI_API_KEY`. La voz sigue con ElevenLabs Flash/Turbo v2.5. El correo, por SMTP transaccional. Cada capacidad va detrás de su adaptador (IVision, ITexto, IImagen, IVoz, ICorreo): cambiar de proveedor = una clase + una variable de entorno. Los modelos se configuran por variable de entorno; antes de fijar los valores por defecto, verifica en la documentación oficial de OpenAI que los modelos existen hoy.
-2. Alcance de esta tanda: TODO el backend del diagrama (cuentas con JWT/PyJWT + Argon2id + consentimiento previo del tutor + verificación por correo; perfiles por niño; biblioteca con borrado a petición; moderación obligatoria que no se puede desactivar; orquestador asyncio de 5 pasos con reintento por paso y degradación; composición con Pillow 11 + rembg; panel de operación con latencia y costo por cuento; límite de tasa con slowapi; PostgreSQL 16 con SQLAlchemy 2 y migraciones con Alembic; S3 compatible; Dockerfile + docker-compose con Postgres y MinIO) MÁS el flujo del niño en la app Flutter (lienzo perfect_freehand, identificación asistida, momento mágico/pantalla de espera, cuento con visor + narración con just_audio, biblioteca con caché Hive, sesión en SharedPreferences, Riverpod, Dio con reintentos, URL del backend inyectable con --dart-define, timeout de 90 s). Edad: 6 a 12 años. UX sin lectura para niños (ver la trampa del vault).
+2. Alcance de esta tanda: TODO el backend del diagrama (cuentas con JWT/PyJWT + Argon2id + consentimiento previo del tutor + verificación por correo; perfiles por niño; biblioteca con borrado a petición; moderación obligatoria que no se puede desactivar; orquestador asyncio de 5 pasos con reintento por paso y degradación; composición con Pillow 11 + rembg; panel de operación con latencia y costo por cuento; límite de tasa con slowapi; PostgreSQL 16 con SQLAlchemy 2 y migraciones con Alembic; S3 compatible; Dockerfile + docker-compose con Postgres y MinIO) MÁS el flujo del niño en la app Flutter (lienzo perfect_freehand, identificación asistida, momento mágico/pantalla de espera, cuento con visor + narración con just_audio, biblioteca con caché Hive, sesión en SharedPreferences, Riverpod, Dio con reintentos, URL del backend inyectable con --dart-define, timeout de 90 s). Edad: 6 a 12 años. UX sin lectura para niños (ver la trampa de las notas).
 3. Frontera de los datos del menor: el dibujo viaja en memoria y nunca se persiste; se guarda solo el cuento resultante. Ningún dato del niño se escribe antes del consentimiento. La moderación corre antes de que el niño vea nada.
-4. Ubicación: carpeta nueva **`C:/Users/&lt;usuario&gt;/OneDrive/Documentos/Repositorios/personal/storydraw-app`**. OJO: NO uses `personal/storydraw`, porque Windows no distingue mayúsculas y chocaría con el vault `personal/StoryDraw`. Estructura: `backend/` y `app/` (Flutter).
+4. Ubicación: carpeta nueva **`&lt;ruta&gt;`**. OJO: NO uses `personal/storydraw`, porque Windows no distingue mayúsculas y chocaría con las notas `personal/StoryDraw`. Estructura: `backend/` y `app/` (Flutter).
 5. **Un solo README.md, en la raíz**, en español: qué es, la arquitectura (capas y adaptadores), cómo correr el backend (docker compose) y la app, las variables de entorno (solo nombres), los tests y el estado o los pendientes. No crees otros README ni .md de documentación en subcarpetas.
 
 # Git (reglas del autor, obligatorias)
-- Repo nuevo **privado** `&lt;usuario&gt;/storydraw` con `gh` ("C:/Program Files/GitHub CLI/gh.exe", ya autenticado como &lt;usuario&gt;).
+- Repo nuevo **privado** `&lt;usuario&gt;/storydraw` con `gh` ("&lt;ruta&gt; Files/GitHub CLI/gh.exe", ya autenticado como &lt;usuario&gt;).
 - Autor de todos los commits: `&lt;autor del repositorio&gt;` (con tilde) y el correo que ya tenga configurado git (`git config --global user.email`). Commits en español, sin `Co-Authored-By` y sin mencionar ninguna IA.
 - Flujo: (a) primer commit en `main` con `.gitignore` y un README.md inicial breve → push de main; (b) crea `qa` desde main y súbela; (c) todo el trabajo va en `feature/implementacion-inicial`, en varios commits lógicos; push de esa rama y abre el PR hacia `qa` con `gh pr create --base qa`. NUNCA mergees a qa ni a main.
 - Antes de cada commit: `git status` y busca secretos (`.env`, claves `sk-`, tokens). Solo se sube `.env.example` con valores vacíos. El `.gitignore` excluye `.env`, `.venv`, `build/`, `.dart_tool/` y cosas así.
-- Ningún secreto en código, chat ni vault. No necesitas claves reales: los tests usan adaptadores falsos.
+- Ningún secreto en código, chat ni notas. No necesitas claves reales: los tests usan adaptadores falsos.
 
 # Verificación (con salida real, no inventada)
 - Backend: `py -3.12` con un venv dentro de `backend/` (uv está disponible). Pytest con adaptadores falsos que cubra: registro + consentimiento + login JWT, el pipeline completo con fakes (incluida la degradación cuando falla imagen o voz), el rechazo por moderación, el borrado a petición y el límite de tasa. Para la BD de los tests vale SQLite o lo que funcione sin Docker. Ruff limpio.
 - Docker: el daemon de Docker Desktop NO está corriendo ahora mismo. Si sigue sin responder (`docker info`), no lo arranques ni instales nada: deja el Dockerfile y el compose escritos y reporta que `docker compose build` quedó sin verificar.
-- Flutter: `/c/Users/&lt;usuario&gt;/flutter/bin/flutter.bat` (lee la trampa «Toolchains Python y Flutter desde Git Bash en Windows» del vault). Ejecuta `flutter pub get`, `flutter analyze` sin errores y `flutter test` con al menos los tests de widgets y de repositorio. Si necesitas code generation, verifica que build_runner funcione; si no, escribe todo a mano.
+- Flutter: `&lt;ruta&gt;` (lee la trampa «Toolchains Python y Flutter desde Git Bash en Windows» de las notas). Ejecuta `flutter pub get`, `flutter analyze` sin errores y `flutter test` con al menos los tests de widgets y de repositorio. Si necesitas code generation, verifica que build_runner funcione; si no, escribe todo a mano.
 - No instales nada global sin permiso: dependencias dentro del venv y de pub, sí.
 
-# Vault (tu memoria, siguiendo su SCHEMA.md)
-Al terminar: nota de decisión `2026-10-17 Reescritura de StoryDraw desde cero` (arquitectura de los diagramas, OpenAI en lugar de Groq, adiós a Draw/); marca como `superado` lo que ya no sea cierto (la decisión de Groq, el backend y el cliente viejos, el rango de edad 3-8 → 6-12) con la línea «Corregido el …» donde aplique; actualiza `StoryDraw.md`, `contexto.md`, `index.md`, el hub y `log.md`; añade a `sistema/obsoletos.md` los hechos viejos. Corre `py sistema/check-vault.py --index` y luego sin `--index` hasta que quede en verde. NO uses git dentro del vault y NO corras el respaldo de memorias: eso lo hace Jarvis después de verificar.
+# Notas (tu memoria, siguiendo su SCHEMA.md)
+Al terminar: nota de decisión `2026-10-17 Reescritura de StoryDraw desde cero` (arquitectura de los diagramas, OpenAI en lugar de Groq, adiós a Draw/); marca como `superado` lo que ya no sea cierto (la decisión de Groq, el backend y el cliente viejos, el rango de edad 3-8 → 6-12) con la línea «Corregido el …» donde aplique; actualiza `StoryDraw.md`, el resumen de las notas, `index.md`, el hub y `log.md`; añade a `sistema/obsoletos.md` los hechos viejos. Corre el validador de notas y luego sin `--index` hasta que quede en verde. NO uses git dentro de las notas y NO corras el respaldo de memorias: eso lo hace el asistente después de verificar.
 
 # Informe final (obligatorio)
-Ruta del repo local, URL del repo, URL del PR, ramas remotas (`git ls-remote --heads`), `git log --oneline --format='%h %an %s'` de cada rama, la salida resumida de pytest, ruff, flutter analyze y flutter test, qué quedó sin verificar y por qué, y la lista de notas del vault que tocaste.</pre></details>
-<details id="c02"><summary>02 · 2026-10-18 · Decisión de alcance: MVP solo Android</summary><p class="fuente">Resultado: vault</p><pre>Jarvis te pasa una decisión del autor (2026-10-18): el MVP de StoryDraw es SOLO Android por ahora. Resuelve la «Contradice a» que dejaste en 'Decisiones/2026-08-29 Alcance del MVP solo Android y sprint de 3 semanas' y en las notas que la mencionan (storydraw-app, la decisión de la reescritura, contexto.md): gana solo Android, confirmado por el autor; iOS 15+ de los diagramas queda como posible fase futura. Sigue SCHEMA.md, agrega la línea en log.md y corre py sistema/check-vault.py --index y luego sin --index hasta que quede en verde. No toques el código ni el repo, no uses git y no respaldes memorias. Responde con la lista de notas tocadas y la salida del validador.</pre></details>
-<details id="c03"><summary>03 · 2026-10-18 · IA gratuita: Cloudflare Workers AI y Ollama</summary><p class="fuente">Resultado: PR #2</p><pre>Encargo de Jarvis para fors. El autor lo aprobó el 2026-10-18. Trabaja con autonomía hasta terminar; si algo falla dos veces, detente y repórtalo.
+Ruta del repo local, URL del repo, URL del PR, ramas remotas (`git ls-remote --heads`), `git log --oneline --format='%h %an %s'` de cada rama, la salida resumida de pytest, ruff, flutter analyze y flutter test, qué quedó sin verificar y por qué, y la lista de notas de las notas que tocaste.</pre></details>
+<details id="c02"><summary>Prompt 02 · Decisión de alcance: MVP solo Android <span class="fuente">(2026-10-18)</span></summary><p class="fuente">Resultado: decisión registrada</p><pre>Te paso una decisión del autor (2026-10-18): el MVP de StoryDraw es SOLO Android por ahora. Resuelve la «Contradice a» que dejaste en 'Decisiones/2026-08-29 Alcance del MVP solo Android y sprint de 3 semanas' y en las notas que la mencionan (storydraw-app, la decisión de la reescritura, el resumen de las notas): gana solo Android, confirmado por el autor; iOS 15+ de los diagramas queda como posible fase futura. Sigue SCHEMA.md, agrega la línea en log.md y corre el validador de notas</pre></details>
+<details id="c03"><summary>Prompt 03 · IA gratuita: Cloudflare Workers AI y Ollama <span class="fuente">(2026-10-18)</span></summary><p class="fuente">Resultado: PR #2</p><pre>Prompt 03 · IA gratuita: Cloudflare Workers AI y Ollama. El autor lo aprobó el 2026-10-18. Trabaja con autonomía hasta terminar; si algo falla dos veces, detente y repórtalo.
 
 # Contexto
-Repo: C:/Users/&lt;usuario&gt;/OneDrive/Documentos/Repositorios/personal/storydraw-app (&lt;usuario&gt;/storydraw, privado). PR #1 (feature/implementacion-inicial -&gt; qa) sigue abierto y sin mergear.
-Decisión del autor: los proveedores de IA serán GRATUITOS. Producción/piloto: **Cloudflare Workers AI** (10.000 neuronas/día gratis). Prueba local de momento: **Ollama**, que ya corre en el host (http://localhost:11434, versión 0.40.3; el único modelo descargado es llama3.2:3b). El MVP es solo Android.
+Repo: &lt;ruta&gt; (&lt;usuario&gt;/storydraw, privado). PR #1 (feature/implementacion-inicial -&gt; qa) sigue abierto y sin mergear.
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 El PC es un Ryzen 7 3700U con 14 GB de RAM y sin GPU NVIDIA: Ollama va por CPU, a unos 5 tok/s; un cuento tarda minutos. Sube los timeouts del adaptador de Ollama (configurables).
 
 # Qué hacer
 1. Rama nueva `feature/proveedores-gratuitos` creada DESDE `feature/implementacion-inicial` (no desde qa).
 2. Adaptadores nuevos detrás de los puertos que ya existen, seleccionables con las variables PROVEEDOR_* que ya hay:
-   - **Cloudflare Workers AI** (REST `https://api.cloudflare.com/client/v4/accounts/{CLOUDFLARE_ACCOUNT_ID}/ai/run/{modelo}`, con Bearer `CLOUDFLARE_API_TOKEN`): visión, texto, imagen (FLUX.1-schnell u otro vigente) y voz (MeloTTS u otro vigente con español). Antes de fijar los modelos por defecto, verifica en developers.cloudflare.com/workers-ai/models que existen hoy y qué formato de entrada y salida usan (la imagen de flux-schnell vuelve en base64; revisa el de la voz). Los modelos se configuran por variable de entorno.
+   - **Cloudflare Workers AI** (REST `https://api.cloudflare.com/client/v4/accounts/{&lt;id de cuenta&gt;}/ai/run/{modelo}`, con Bearer `&lt;token&gt;`): visión, texto, imagen (FLUX.1-schnell u otro vigente) y voz (MeloTTS u otro vigente con español). Antes de fijar los modelos por defecto, verifica en developers.cloudflare.com/workers-ai/models que existen hoy y qué formato de entrada y salida usan (la imagen de flux-schnell vuelve en base64; revisa el de la voz). Los modelos se configuran por variable de entorno.
    - **Ollama** (API nativa /api/chat u /api/generate con `format: json`, OLLAMA_URL y modelos por variable): texto y visión. Imagen y voz NO existen en Ollama: en la prueba local esos pasos usan la degradación que ya tiene el orquestador (placeholder o cuento sin audio), sin romper nada.
    - **Moderación**: la de OpenAI es gratuita, pero exige una clave. Para que la prueba local funcione sin claves, agrega un adaptador de moderación con LLM (Ollama/Cloudflare) que clasifique el texto del cuento y devuelva aprobado o rechazado. Debe estar claramente marcado como solo para desarrollo y fallar cerrado (si no responde, el cuento no se muestra, como ya es la regla). La moderación sigue siendo obligatoria.
    - Mantén los adaptadores de OpenAI y ElevenLabs: no se borran.
-   - Cada adaptador calcula su costo para el panel de operación (Ollama = 0; Cloudflare = neuronas convertidas a USD, con la tarifa en una variable).
-3. `.env.example` (solo nombres, valores vacíos o defaults no secretos): CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN, CLOUDFLARE_MODELO_*, OLLAMA_URL, OLLAMA_MODELO_*, OLLAMA_TIMEOUT_S, y los PROVEEDOR_* con sus valores posibles documentados en comentarios.
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
+3. `.env.example` (solo nombres, valores vacíos o defaults no secretos): &lt;id de cuenta&gt;, &lt;token&gt;, CLOUDFLARE_MODELO_*, OLLAMA_URL, OLLAMA_MODELO_*, OLLAMA_TIMEOUT_S, y los PROVEEDOR_* con sus valores posibles documentados en comentarios.
 4. Un perfil de prueba local en docker compose (por ejemplo, el override `docker-compose.ollama.yml` o un perfil `local`) donde la API alcance al Ollama del host en `http://host.docker.internal:11434` (en Windows funciona con Docker Desktop; agrega `extra_hosts: host.docker.internal:host-gateway` por si acaso).
 5. Tests con HTTP simulado para cada adaptador nuevo (la forma del pedido y el parseo de la respuesta, incluidos errores y timeouts) y para la moderación con LLM fallando cerrada. Los 47 tests que hay tienen que seguir pasando. Ruff limpio.
 6. Actualiza el único README.md de la raíz: proveedores disponibles, cómo correr la prueba local con Ollama y cómo pasar a Cloudflare. No crees otros .md.
@@ -83,33 +82,33 @@ El PC es un Ryzen 7 3700U con 14 GB de RAM y sin GPU NVIDIA: Ollama va por CPU, 
 
 # Git (reglas del autor)
 - Commits en español, autor `&lt;autor del repositorio&gt;`, sin coautor y sin mencionar ninguna IA. Busca secretos antes de cada commit; nunca subas `.env`.
-- Push de `feature/proveedores-gratuitos` y abre el PR #2 hacia `qa` con `gh pr create --base qa`. En la descripción, aclara que incluye los commits del PR #1. NO mergees nada y NO borres ni cierres `feature/implementacion-inicial` ni el PR #1: eso lo decidel autor.
+- Push de `feature/proveedores-gratuitos` y abre el PR #2 hacia `qa` con `gh pr create --base qa`. En la descripción, aclara que incluye los commits del PR #1. NO mergees nada y NO borres ni cierres `feature/implementacion-inicial` ni el PR #1: eso lo decide el autor.
 
-# Vault
-Actualiza [[storydraw-app]] y lo que corresponda (decisión nueva `2026-10-18 Proveedores de IA gratuitos: Cloudflare y Ollama`, que supera a la parte de la reescritura que decía "OpenAI para todo", con «Corregido el …»), contexto, index, hub, log y obsoletos. Valida con `py sistema/check-vault.py --index` y luego sin `--index` hasta que quede en verde. Sin git en el vault y sin respaldar memorias.
+# Notas
+Actualiza [[storydraw-app]] y lo que corresponda (decisión nueva `2026-10-18 Proveedores de IA gratuitos: Cloudflare y Ollama`, que supera a la parte de la reescritura que decía "OpenAI para todo", con «Corregido el …»), contexto, index, hub, log y obsoletos. Valida con el validador de notas y luego sin `--index` hasta que quede en verde. Sin git en las notas y sin respaldar memorias.
 
 # Informe final
-URL del PR #2, `git log --oneline --format='%h %an %s' origin/qa..origin/feature/proveedores-gratuitos`, las salidas resumidas de pytest, ruff, docker compose build y del flujo por HTTP en Docker (estado del cuento, pasos degradados y latencias), los modelos de Cloudflare elegidos y dónde los verificaste, lo que quedó sin verificar y las notas del vault que tocaste.</pre></details>
-<details id="c04"><summary>04 · 2026-10-19 · Voz local de desarrollo y gemma3 en Ollama (después descartada)</summary><p class="fuente">Resultado: rama local, superada</p><pre>Encargo de Jarvis para fors (2026-10-19). el autor lo aprobó. Trabaja con autonomía; si algo falla dos veces, para y escríbelo en el informe.
-**Escribe tu informe final en** `C:/Users/&lt;usuario&gt;/AppData/Local/hermes/profiles/jarvis/cache/scratch/informe-fors-voz.md` (además de responderlo).
+URL del PR #2, `git log --oneline --format='%h %an %s' origin/qa..origin/feature/proveedores-gratuitos`, las salidas resumidas de pytest, ruff, docker compose build y del flujo por HTTP en Docker (estado del cuento, pasos degradados y latencias), los modelos de Cloudflare elegidos y dónde los verificaste, lo que quedó sin verificar y las notas de las notas que tocaste.</pre></details>
+<details id="c04"><summary>Prompt 04 · Voz local de desarrollo y gemma3 en Ollama (después descartada) <span class="fuente">(2026-10-19)</span></summary><p class="fuente">Resultado: rama local, superada</p><pre>Prompt 04 · Voz local de desarrollo y gemma3 en Ollama (después descartada). el autor lo aprobó. Trabaja con autonomía; si algo falla dos veces, para y escríbelo en el informe.
+**Escribe tu informe final en** `&lt;ruta&gt;` (además de responderlo).
 
 # Contexto
-Repo: &lt;repositorios&gt;/personal/storydraw-app. PR #1 y PR #2 siguen abiertos hacia qa, sin mergear. Última rama: feature/proveedores-gratuitos.
-Decisiones de el autor de hoy:
+Repo: &lt;ruta&gt; PR #1 y PR #2 siguen abiertos hacia qa, sin mergear. Última rama: feature/proveedores-gratuitos.
+Decisiones del autor de hoy:
 1. **Voz femenina para los cuentos** usando la voz local de VoiceStudio, SOLO para desarrollo (nunca producción). En producción sigue Cloudflare MeloTTS / ElevenLabs.
-2. Ollama: el modelo por defecto pasa a ser **gemma3:4b** (texto, visión y moderación). `llama3.2:3b` deja de usarse y Jarvis lo va a borrar.
+2. Ollama: el modelo por defecto pasa a ser **gemma3:4b** (texto, visión y moderación). `llama3.2:3b` deja de usarse y el asistente lo va a borrar.
 
 VoiceStudio corre en el host en `http://localhost:3900` (desde Docker: `http://host.docker.internal:3900`). Tiene una API compatible con OpenAI:
 `POST /v1/audio/speech` con JSON UTF-8 `{"model": "moss-tts-nano", "input": "&lt;texto&gt;", "voice": "cd1c5122", "response_format": "mp3", "language": "es"}` y devuelve audio/mpeg.
 - `cd1c5122` es el perfil de voz **«Narradora StoryDraw»** (voz femenina; referencia «Ava» del motor MOSS-TTS-Nano). Sin clave.
 - Por CPU tarda unas 6 veces la duración del audio (unos 50 s por frase de 9 s; la primera llamada en frío, ~90-220 s). Timeout del adaptador configurable y alto (900 s por página por defecto); las páginas se narran **en serie**, no en paralelo, para no saturar el CPU.
-- Licencias: el modelo de voz es solo para desarrollo; escríbelo en el README y en el vault.
+- Licencias: el modelo de voz es solo para desarrollo; escríbelo en el README y en las notas.
 
 # Qué hacer
 Rama nueva `feature/voz-local-y-ajustes` creada DESDE `feature/proveedores-gratuitos`.
 1. Adaptador `IVoz` nuevo: `PROVEEDOR_VOZ=voicestudio`, con `VOICESTUDIO_URL`, `VOICESTUDIO_MODELO` (moss-tts-nano), `VOICESTUDIO_VOZ` (cd1c5122) y `VOICESTUDIO_TIMEOUT_S`. Costo 0. La configuración lo rechaza con `ENTORNO=produccion`, como a los otros de desarrollo. Tests con HTTP simulado: forma del pedido (UTF-8, con acentos), audio de vuelta, error y timeout.
 2. Override de Ollama (`docker-compose.ollama.yml`): por defecto `gemma3:4b` en texto, visión y moderación, y `PROVEEDOR_VOZ=voicestudio`, con `VOICESTUDIO_URL=http://host.docker.internal:3900`. La imagen sigue en `ninguno`.
-3. Arreglos que salieron de la prueba de Jarvis:
+3. Arreglos que salieron de la prueba del asistente:
    a. El paso del cuento recibía solo la etiqueta del personaje («Dinosaurio») y el modelo inventó «pelaje marrón y ojos verdes» con un dibujo verde. Pásale también los atributos que detecta la visión (color, elementos, emoción), que no son datos personales del niño. Test que lo cubra.
    b. Con `PROVEEDOR_IMAGEN=ninguno` o `PROVEEDOR_VOZ=ninguno`, el orquestador igual reintentaba ese paso. Que no reintente lo que está apagado.
    c. Asegura que con Ollama se pida el esquema JSON (`format` con esquema que exija exactamente 3 páginas) y que el dominio valide 3 páginas: si llegan menos, regenera (cuenta como reintento) en lugar de entregar un cuento incompleto. Test.
@@ -117,7 +116,7 @@ Rama nueva `feature/voz-local-y-ajustes` creada DESDE `feature/proveedores-gratu
 5. pytest y ruff en verde (eran 87 tests). La app Flutter no cambia, salvo que algo lo exija; si cambia, `flutter analyze` y `flutter test`.
 
 # Prueba de punta a punta (obligatoria, con salida real)
-Docker Desktop corre. Levanta `docker compose -f docker-compose.yml -f docker-compose.ollama.yml up --build -d`, aplica las migraciones y haz el flujo completo por HTTP: registro con un correo NUEVO `@storydraw.com`, verificación desde Mailpit, login, perfil (edad 7), identificar con el PNG `C:/Users/&lt;usuario&gt;/AppData/Local/hermes/profiles/jarvis/cache/scratch/dibujo-dino.png` y crear el cuento con el personaje que devuelva la identificación. Espera a que termine (puede tardar 15-25 minutos por CPU). Guarda en `C:/Users/&lt;usuario&gt;/AppData/Local/hermes/profiles/jarvis/cache/scratch/e2e-storydraw/`:
+Docker Desktop corre. Levanta `docker compose -f docker-compose.yml -f docker-compose.ollama.yml up --build -d`, aplica las migraciones y haz el flujo completo por HTTP: registro con un correo NUEVO `@storydraw.com`, verificación desde Mailpit, login, perfil (edad 7), identificar con el PNG `&lt;ruta&gt;` y crear el cuento con el personaje que devuelva la identificación. Espera a que termine (puede tardar 15-25 minutos por CPU). Guarda en `&lt;ruta&gt;`:
 - `cuento.json` (respuesta final del API), `pagina1.png` a `pagina3.png` y `audio1.mp3` a `audio3.mp3` descargados por el API;
 - `metricas.json` con la latencia por paso (del panel de operación o del log de la API).
 Comprueba con ffprobe que los tres mp3 duran más de 0 s. Al terminar, `docker compose ... down` (sin `-v`).
@@ -126,20 +125,20 @@ Las llamadas largas van en segundo plano con log a archivo: los comandos en prim
 # Git
 Commits locales en español, autor el autor, sin coautor y sin mencionar ninguna IA; nunca `.env`. **NO hagas push ni abras PR**: el autor todavía no lo autorizó para esta rama.
 
-# Vault (SCHEMA.md)
-Nota o actualización: voz local de desarrollo (VoiceStudio + MOSS-TTS-Nano, perfil «Narradora StoryDraw», tiempos medidos, solo desarrollo; OmniVoice descartado porque no termina una frase en 600 s en este PC y su licencia es no comercial). Ollama por defecto gemma3:4b. Los tres arreglos. Actualiza storydraw-app, contexto, index, hub, log y obsoletos (qwen2.5vl:3b / llama3.2:3b como defaults ya no valen). Validador `--index` y luego sin él, en verde. Sin git en el vault y sin respaldar.
+# Notas (SCHEMA.md)
+Nota o actualización: voz local de desarrollo (VoiceStudio + MOSS-TTS-Nano, perfil «Narradora StoryDraw», tiempos medidos, solo desarrollo; OmniVoice descartado porque no termina una frase en 600 s en este PC y su licencia es no comercial). Ollama por defecto gemma3:4b. Los tres arreglos. Actualiza storydraw-app, contexto, index, hub, log y obsoletos (qwen2.5vl:3b / llama3.2:3b como defaults ya no valen). Validador `--index` y luego sin él, en verde. Sin git en las notas y sin respaldar.
 
 # Informe (en el archivo indicado)
-`git log --oneline --format='%h %an %s' feature/proveedores-gratuitos..feature/voz-local-y-ajustes`, salida resumida de pytest y ruff, resultado del flujo (estado, título, texto de las 3 páginas, avisos, latencias por paso, duraciones de los mp3), qué falló o quedó sin verificar y notas del vault tocadas.</pre></details>
-<details id="c05"><summary>05 · 2026-10-21 · StoryDraw sin narración, a qa y luego a main</summary><p class="fuente">Resultado: PR #3</p><pre># Encargo de Jarvis para fors: StoryDraw sin narración, a qa (y luego a main)
+`git log --oneline --format='%h %an %s' feature/proveedores-gratuitos..feature/voz-local-y-ajustes`, salida resumida de pytest y ruff, resultado del flujo (estado, título, texto de las 3 páginas, avisos, latencias por paso, duraciones de los mp3), qué falló o quedó sin verificar y notas de las notas tocadas.</pre></details>
+<details id="c05"><summary>Prompt 05 · StoryDraw sin narración, a qa y luego a main <span class="fuente">(2026-10-21)</span></summary><p class="fuente">Resultado: PR #3</p><pre># Prompt 05 · StoryDraw sin narración, a qa y luego a main
 
-Decisiones de el autor (2026-10-19), literales:
+Decisiones del autor (2026-10-19), literales:
 - «Quitar toda la narración: el cuento sale sin audio por ahora.» La implementación de voz que hay
   no le convence. Esto incluye VoiceStudio **y** el puerto/adaptadores de voz de la base
   (ElevenLabs, Cloudflare/Ollama TTS si los hay) y la UI de narración en la app Flutter.
-- «Fors mergea a qa, yo reviso, y luego él pasa qa a main.»
+- «El asistente mergea a qa, yo reviso, y luego él pasa qa a main.»
 
-Repo: `&lt;repositorios&gt;/personal\storydraw-app` (`&lt;usuario&gt;/storydraw`, privado).
+Repo: `&lt;ruta&gt;` (`&lt;usuario&gt;/storydraw`, privado).
 Estado al empezar: PR #1 (`feature/implementacion-inicial`) y PR #2 (`feature/proveedores-gratuitos`)
 abiertos hacia `qa`; rama local `feature/voz-local-y-ajustes` (sin push) con 3 commits encima de #2.
 `58ea713` mezcla voz con arreglos que SÍ se quieren: rasgos del dibujo en el cuento, capacidades
@@ -147,7 +146,7 @@ apagadas sin reintentos y cuentos de 3 páginas exactas.
 
 ## Pasos
 
-1. Arranque: tu `contexto.md`, final de `log.md`, `index.md`, [[storydraw-app]] y
+1. Arranque: tu resumen de notas, final de `log.md`, `index.md`, [[storydraw-app]] y
    [[2026-10-19 Voz local VoiceStudio y gemma3 en Ollama]].
 2. Mergea a `qa` el PR #1 y luego el PR #2 con `gh pr merge` (merge commit, sin squash), en ese
    orden. el autor lo autorizó. Si alguno tiene conflictos o el CI falla, PARA y escríbelo en el informe.
@@ -164,7 +163,7 @@ apagadas sin reintentos y cuentos de 3 páginas exactas.
    sin audio, si el entorno lo permite; si no, di por qué.
 6. Commits en español, autor `el autor`, **sin** línea `Co-Authored-By` ni mención de IA.
    Incluye en la rama, en un commit propio («Docs: prompts de la creación inicial del proyecto»),
-   la carpeta `docs/prompts/` que Jarvis dejó sin seguimiento en el repo (5 archivos .md). el autor la
+   la carpeta `docs/prompts/` que el asistente dejó sin seguimiento en el repo (5 archivos .md). el autor la
    pidió explícitamente, así que es una excepción a la regla de «un solo README». No cambies su
    texto; si encuentras un secreto en ella, para y avísalo. Enlázala desde el README con una línea.
    Push de `feature/sin-narracion`, PR hacia `qa` y mergéalo a `qa` cuando esté en verde.
@@ -172,29 +171,29 @@ apagadas sin reintentos y cuentos de 3 páginas exactas.
 8. Ramas: borra (local y remota) `feature/implementacion-inicial` y `feature/proveedores-gratuitos`
    solo después de que estén mergeadas. **No borres `feature/voz-local-y-ajustes`**: es trabajo sin
    push y el autor decide qué hacer con él.
-9. Vault: nota de decisión nueva «2026-10-19 StoryDraw sin narración por ahora» que deja en
+9. Notas: nota de decisión nueva «2026-10-19 StoryDraw sin narración por ahora» que deja en
    `estado: superado` la de voz de VoiceStudio (sin borrarla); actualiza [[storydraw-app]],
    [[StoryDraw]], hub, contexto, índice y log; validador en verde. **No** corras
    `respaldar-memorias.py`: lo hago yo.
-10. Informe en `D:\ArtCraft\_encargos\fors-sin-narracion-informe.md`: PRs y su estado, commits
+10. Informe en `&lt;ruta&gt;`: PRs y su estado, commits
     (hash, autor, mensaje), lista de lo quitado por capa, salida real de cada prueba (última línea),
     ramas que quedan, notas tocadas y lo pendiente.
 
 Si algo falla dos veces, para y anótalo en el informe en vez de forzarlo.</pre></details>
-<details id="c06"><summary>06 · 2026-10-22 · Fondos con estilo de lápices de colores</summary><p class="fuente">Resultado: PR #7</p><pre># Encargo de Jarvis para fors: fondos con estilo de lápices de colores (2026-10-22)
+<details id="c06"><summary>Prompt 06 · Fondos con estilo de lápices de colores <span class="fuente">(2026-10-22)</span></summary><p class="fuente">Resultado: PR #7</p><pre># Prompt 06 · Fondos con estilo de lápices de colores
 
-Decisión de el autor: los fondos son demasiado realistas; deben verse como un libro de cuentos
+Decisión del autor: los fondos son demasiado realistas; deben verse como un libro de cuentos
 ilustrado, con el estilo **«lápices de colores y crayón»** que él eligió entre tres pruebas.
 Trabaja con autonomía; si algo falla dos veces, para y escríbelo en el informe.
 
-Repo: `&lt;repositorios&gt;/personal\storydraw-app` (público, `&lt;usuario&gt;/storydraw`).
-El `.env` de la raíz ya tiene `CLOUDFLARE_ACCOUNT_ID` y `CLOUDFLARE_API_TOKEN`: léelos dentro del
+Repo: `&lt;ruta&gt;` (público, `&lt;usuario&gt;/storydraw`).
+El `.env` de la raíz ya tiene `&lt;id de cuenta&gt;` y `&lt;token&gt;`: léelos dentro del
 código, **nunca los imprimas** ni los pongas en un log, commit o nota.
 
 ## Cambio
 
 1. Rama `feature/fondos-estilo-lapices` desde `qa` actualizado.
-2. En `backend/app/infra/adaptadores/comun.py`, `prompt_fondo` pasa a este texto (probado por Jarvis
+2. En `backend/app/infra/adaptadores/comun.py`, `prompt_fondo` pasa a este texto (probado por el asistente
    con flux-1-schnell; es el que eligió el autor):
 
    ```
@@ -214,27 +213,27 @@ código, **nunca los imprimas** ni los pongas en un log, commit o nota.
 5. Verificación real: `pytest` y `ruff check` en verde (corridos por ti, con `env -u PYTHONPATH -u
    PYTHONHOME` si el venv choca con otro Python). Luego un cuento de punta a punta con Cloudflare
    real (visión, texto, moderación de desarrollo e imagen), basado en
-   `C:/Users/&lt;usuario&gt;\AppData\Local\hermes\profiles\jarvis\cache\scratch\e2e-cloudflare\e2e_cloudflare.py`.
+   `&lt;ruta&gt;`.
    Guarda las 3 páginas y un montaje dibujo + 3 páginas en
-   `C:/Users/&lt;usuario&gt;\AppData\Local\hermes\profiles\jarvis\cache\scratch\e2e-lapices\` y míralas con
+   `&lt;ruta&gt;` y míralas con
    visión: estilo lápiz y sin personas añadidas. Si sale una persona, ajusta la regla de escenas y
-   repite (máximo 3 cuentos, cada uno gasta ~210 neuronas de las 10.000 diarias).
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 6. README: una línea sobre el estilo de los fondos.
 7. Git: commits en español, autor `el autor`, sin `Co-Authored-By` ni mención de IA. Busca
    secretos antes de cada commit. Push, PR hacia `qa` y mérgealo cuando esté en verde. **No** toques
-   `main`: lo promueve Jarvis después de verificar.
-8. Vault: actualiza la nota que corresponda (decisión del estilo de fondos y lo medido: ~210
-   neuronas por cuento, ~47 cuentos/día gratis, el plan gratis no cobra, falla al agotar el cupo y
+   `main`: lo promueve el asistente después de verificar.
+8. Notas: actualiza la nota que corresponda (decisión del estilo de fondos y lo medido: ~210
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
    se reinicia a las 00:00 UTC), hub, contexto, índice, log; validador en verde. No respaldes.
-9. Informe en `D:\ArtCraft\_encargos\fors-fondos-lapices-informe.md`: PR, commits, prompts finales,
+9. Informe en `&lt;ruta&gt;`: PR, commits, prompts finales,
    salida de pytest/ruff, latencia y costo por paso del cuento, rutas de las imágenes y lo que viste.</pre></details>
-<details id="c07"><summary>07 · 2026-10-26 · Documento de contexto para IA (CONTEXTO-IA.md)</summary><p class="fuente">Resultado: rama docs/contexto-ia</p><pre># Encargo de Jarvis para fors: documento de contexto de StoryDraw para IA (2026-10-26)
+<details id="c07"><summary>Prompt 07 · Documento de contexto para IA (CONTEXTO-IA.md) <span class="fuente">(2026-10-26)</span></summary><p class="fuente">Resultado: rama docs/contexto-ia</p><pre># Prompt 07 · Documento de contexto para IA (CONTEXTO-IA.md)
 
-Pedido de el autor: subir al repo un `.md` de contextualización del proyecto, pensado para que **una IA
+Pedido del autor: subir al repo un `.md` de contextualización del proyecto, pensado para que **una IA
 lo lea y le explique a una persona que va a llevar el proyecto** qué es, cómo está, qué falta y qué
 se puede mejorar. Trabaja con autonomía; si algo falla dos veces, para y escríbelo en el informe.
 
-Repo: `&lt;repositorios&gt;/personal\storydraw-app`
+Repo: `&lt;ruta&gt;`
 (`&lt;usuario&gt;/storydraw`, **público**).
 
 ## Contenido (archivo `CONTEXTO-IA.md` en la raíz)
@@ -254,38 +253,38 @@ escribe «no consta».
    moderación obligatoria y de OpenAI en producción, frontera de datos del menor).
 6. Qué hace falta (priorizado): despliegue, APK y prueba en celular, moderación de producción,
    recorte del dibujo (el sol sale pegado con `umbral`), medición real de la cuota de Cloudflare,
-   y lo que encuentres en el código o en tu vault.
+   y lo que encuentres en el código o en tus notas.
 7. Qué se puede mejorar (técnico, producto, seguridad, costos), con el riesgo y el esfuerzo estimado.
 8. Cómo correrlo y probarlo (resumen; remite al README para el detalle) y variables de entorno
    solo por nombre.
 9. Glosario y enlaces internos (README, `docs/prompts/`).
 
-**Privacidad (el repo es público):** sin claves, sin `.env`, sin el ID de cuenta de Cloudflare, sin
-correos, sin rutas `C:\Users\...` y **sin el nombre de el autor** (usa «el autor» o «el equipo»).
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
+correos, sin rutas `&lt;ruta&gt;` y **sin el nombre del autor** (usa «el autor» o «el equipo»).
 Enlázalo desde el README con una línea.
 
-## Entrega (regla de el autor)
+## Entrega (regla del autor)
 
 - Rama nueva `docs/contexto-ia` desde `qa` actualizado. Commit en español, autor `el autor`,
   sin `Co-Authored-By` ni mención de IA. Busca secretos antes del commit. Push de la rama.
 - **No abras PR ni mergees**: el autor decide después si sube a `main`.
 
-## Vault
+## Notas
 
 Actualiza [[storydraw-app]] (dónde está el documento y para qué), log; validador en verde. No respaldes.
 
 ## Informe
 
-`D:\ArtCraft\_encargos\fors-contexto-ia-informe.md`: rama, commit, tamaño del documento, lista de
+`&lt;ruta&gt;`: rama, commit, tamaño del documento, lista de
 secciones, lo que marcaste «sin verificar» y lo que encontraste nuevo que falta.</pre></details>
-<details id="c08"><summary>08 · 2026-10-26 · Logo nuevo y entrada como invitado (solo local)</summary><p class="fuente">Resultado: rama feature/logo-y-modo-invitado</p><pre># Encargo de Jarvis para fors: logo nuevo y entrada como invitado (2026-10-26)
+<details id="c08"><summary>Prompt 08 · Logo nuevo y entrada como invitado (solo local) <span class="fuente">(2026-10-26)</span></summary><p class="fuente">Resultado: rama feature/logo-y-modo-invitado</p><pre># Prompt 08 · Logo nuevo y entrada como invitado (solo local)
 
 el autor lo pidió y aprobó. Trabaja con autonomía; si algo falla dos veces, para y escríbelo en el informe.
 
-Repo: `&lt;repositorios&gt;/personal\storydraw-app` (público).
+Repo: `&lt;ruta&gt;` (público).
 Base: rama `docs/contexto-ia` NO está en `qa` todavía; parte de `qa` actualizado.
 En el árbol local hay cosas sin commit que NO son tuyas y no debes subir: `app/web/` (plataforma web
-generada por Jarvis para la prueba local) y `app/assets/marca/logo-original.png` (el logo, ese sí
+generada por el asistente para la prueba local) y `app/assets/marca/logo-original.png` (el logo, ese sí
 úsalo y súbelo).
 
 ## 1. Logo
@@ -293,7 +292,7 @@ generada por Jarvis para la prueba local) y `app/assets/marca/logo-original.png`
 - Archivo: `app/assets/marca/logo-original.png` (1568×420, RGB, fondo blanco): ícono cuadrado a la
   izquierda (lápiz naranja dibujando un trazo azul, estrella rosa, fondo crema con borde negro
   redondeado) y el texto «Story» negro + «Draw» naranja.
-- Saca con PhotoCraft (skill `artcraft-apps`) un `logo.png` horizontal con fondo transparente y un
+- Saca con PhotoCraft  un `logo.png` horizontal con fondo transparente y un
   `icono.png` cuadrado (solo el ícono, 1024×1024, con margen). Mira el resultado con visión.
 - Úsalo en la app: pantalla de bienvenida/login (logo horizontal) y donde hoy haya título o marca.
   Ícono de la app en Android (`mipmap-*`, a mano o con el paquete que ya esté; si añadir
@@ -302,7 +301,7 @@ generada por Jarvis para la prueba local) y `app/assets/marca/logo-original.png`
 - Colores: si la app tiene un tema, alinea el naranja (#FF6B35 aprox.; mídelo del PNG) y el azul
   del trazo con la marca sin romper el contraste.
 
-## 2. Entrar como invitado (decisiones de el autor, literales)
+## 2. Entrar como invitado (decisiones del autor, literales)
 
 - «Entra directo, sin consentimiento (solo para pruebas locales).»
 - «Se guardan solo en el celular; si se borra la app, se pierden.»
@@ -329,29 +328,29 @@ Diseño esperado:
   el cuento del invitado no queda en la BD) y ruff, en verde, con `env -u PYTHONPATH -u PYTHONHOME`.
 - App: `flutter analyze` y `flutter test` (widget del botón invitado visible solo con el flag;
   repositorio local de cuentos del invitado).
-- **No reinicies ni toques** la API local que Jarvis tiene corriendo en `127.0.0.1:8000` ni el
+- **No reinicies ni toques** la API local que el asistente tiene corriendo en `127.0.0.1:8000` ni el
   servidor web de `:5000`: el autor la está usando. Para tu prueba de punta a punta usa otro puerto
   (p. ej. 8010) y una BD SQLite tuya, con Cloudflare real (máximo 2 cuentos).
 
-## Entrega (regla de el autor)
+## Entrega (regla del autor)
 
 - Rama nueva `feature/logo-y-modo-invitado` desde `qa`. Commits en español, autor
   `el autor` con el correo noreply de GitHub que ya usas, sin `Co-Authored-By` ni mención
   de IA. Busca secretos. Push de la rama. **No abras PR ni mergees.**
 - README: cómo encender el modo invitado en local (flags) y que en producción está prohibido.
-  Aprovecha para quitar el nombre de el autor de la línea «por decisión de el autor» del README.
+  Aprovecha para quitar el nombre del autor de la línea «por decisión del autor» del README.
 
-## Vault
+## Notas
 
 Nota de decisión «2026-10-26 Modo invitado solo para pruebas locales» y la marca (logo), con
 [[storydraw-app]], hub, contexto, índice, log; validador en verde. No respaldes.
 
 ## Informe
 
-`D:\ArtCraft\_encargos\fors-logo-invitado-informe.md`: rama, commits, flags y cómo probarlo,
+`&lt;ruta&gt;`: rama, commits, flags y cómo probarlo,
 salidas de las pruebas, capturas de la pantalla de inicio con el logo y el botón (en
-`C:/Users/&lt;usuario&gt;\AppData\Local\hermes\profiles\jarvis\cache\scratch\storydraw-logo\`), y pendientes.</pre></details>
-<details id="c09"><summary>09 · 2026-10-26 · Estado vacío de perfiles</summary><p class="fuente">Resultado: misma rama</p><pre># Encargo de Jarvis para fors: estado vacío de perfiles (2026-10-26)
+`&lt;ruta&gt;`), y pendientes.</pre></details>
+<details id="c09"><summary>Prompt 09 · Estado vacío de perfiles <span class="fuente">(2026-10-26)</span></summary><p class="fuente">Resultado: misma rama</p><pre># Prompt 09 · Estado vacío de perfiles
 
 el autor probó la app web local en modo invitado y se quedó en «¿Quién va a dibujar?» sin saber qué
 hacer: con cero perfiles la pantalla queda vacía y el único indicio es el botón flotante pequeño
@@ -359,7 +358,7 @@ hacer: con cero perfiles la pantalla queda vacía y el único indicio es el bot�
 
 Trabaja con autonomía; si algo falla dos veces, para y escríbelo en el informe.
 
-Repo: `&lt;repositorios&gt;/personal\storydraw-app`.
+Repo: `&lt;ruta&gt;`.
 **Rama: `feature/logo-y-modo-invitado` (la misma; ya está en el remoto).** Haz `git pull --ff-only`
 antes. En el árbol hay `app/web/` sin seguimiento: no es tuyo, no lo subas.
 
@@ -379,41 +378,41 @@ antes. En el árbol hay `app/web/` sin seguimiento: no es tuyo, no lo subas.
 5. Verificación: `flutter analyze` y `flutter test` en verde. Compila la versión web **en tu scratch**
    (no en `app/build/`) con `--dart-define=MODO_INVITADO=true` y saca capturas de: perfiles vacío,
    formulario, perfiles con uno creado, lienzo vacío. Guárdalas en
-   `C:/Users/&lt;usuario&gt;\AppData\Local\hermes\profiles\jarvis\cache\scratch\storydraw-perfiles\` y míralas
-   con visión. No toques los servidores de Jarvis en `:8000` y `:5000`.
+   `&lt;ruta&gt;` y míralas
+   con visión. No toques los servidores del asistente en `:8000` y `:5000`.
 
 ## Entrega
 
 Commit(s) en español, autor `el autor` con el correo noreply de GitHub que ya usas, sin
 `Co-Authored-By` ni mención de IA. Push a la misma rama. **No abras PR ni mergees: nada de esto va a
-`main` por ahora** (decisión de el autor).
+`main` por ahora** (decisión del autor).
 
-## Vault
+## Notas
 
 Actualiza [[UX sin lectura para ninos]] o la nota que corresponda con el estado vacío, log;
 validador en verde. No respaldes.
 
 ## Informe
 
-`D:\ArtCraft\_encargos\fors-perfiles-vacio-informe.md`: commits, salidas de las pruebas y rutas de
+`&lt;ruta&gt;`: commits, salidas de las pruebas y rutas de
 las capturas.</pre></details>
-<details id="c10"><summary>10 · 2026-10-26 · Lentitud del cuento de invitado</summary><p class="fuente">Resultado: misma rama</p><pre># Encargo de Jarvis para fors: lentitud del cuento de invitado (2026-10-26)
+<details id="c10"><summary>Prompt 10 · Lentitud del cuento de invitado <span class="fuente">(2026-10-26)</span></summary><p class="fuente">Resultado: misma rama</p><pre># Prompt 10 · Lentitud del cuento de invitado
 
 el autor lo aprobó. Trabaja con autonomía; si algo falla dos veces, para y escríbelo en el informe.
 
-Repo: `&lt;repositorios&gt;/personal\storydraw-app`.
+Repo: `&lt;ruta&gt;`.
 **Rama: `feature/logo-y-modo-invitado`** (`git pull --ff-only` antes). `app/web/` sin seguimiento no
 es tuyo: no lo subas. **Nada va a `main`, sin PR ni merge.**
 
-## Qué pasó (registro de la API local de Jarvis, 2026-10-26)
+## Qué pasó (registro de la API local del asistente, 2026-10-26)
 
-Tercer cuento de el autor en modo invitado desde la app web: `latencia_ms=179926` (lo normal 28–44 s).
+Tercer cuento del autor en modo invitado desde la app web: `latencia_ms=179926` (lo normal 28–44 s).
 - `POST /v1/invitado/cuentos` 202 → texto con `@cf/google/gemma-4-26b-a4b-it`: una llamada tardó
   ~64 s (18:21:21 → 18:22:25), lo normal ~7 s. Eso es Cloudflare.
 - Fondos con flux: 18:22:32 → 18:22:44 (normal).
 - **Desde el último fondo (18:22:44) hasta `estado=listo` (18:24:14) pasaron ~90 s** sin llamadas
   externas y el proceso casi sin CPU (41,7 s acumulados, sin subir en 5 s). Eso es nuestro: montaje
-  del dibujo real de el autor sobre los fondos (`RECORTE=umbral`), subida al almacén en memoria,
+  del dibujo real del autor sobre los fondos (`RECORTE=umbral`), subida al almacén en memoria,
   `invitados.terminar`, o algo que espera (¿un `await` bloqueante, un `to_thread` que no se usa,
   un timeout que se cumple?). Hipótesis, confianza baja: encuéntralo midiendo, no adivinando.
 - La app consultó `GET /v1/invitado/cuentos/{id}` 78 veces (≈1 por segundo).
@@ -424,7 +423,7 @@ Tercer cuento de el autor en modo invitado desde la app web: `latencia_ms=179926
 1. **Medir**: log de duración por etapa (identificar, texto, moderación, cada fondo, montaje,
    almacén, entrega) en el orquestador y en `procesar_cuento_invitado`, a nivel INFO, sin datos del
    niño. Reproduce con el dibujo más grande que puedas (p. ej. lienzo web a 1600 px) en tu puerto
-   (8010, BD propia; **no toques los servidores de Jarvis en :8000 y :5000**), con proveedores falsos
+   (8010, BD propia; **no toques los servidores del asistente en :8000 y :5000**), con proveedores falsos
    primero y Cloudflare real después (máximo 2 cuentos).
 2. **Corregir la causa** de los ~90 s. Si es CPU de Pillow/numpy en el bucle de eventos, sácalo a
    `asyncio.to_thread`; si es otra cosa, arréglala en su sitio. Revisa que el flujo con cuenta
@@ -437,55 +436,55 @@ Tercer cuento de el autor en modo invitado desde la app web: `latencia_ms=179926
 5. **Pruebas**: pytest + ruff (`env -u PYTHONPATH -u PYTHONHOME`), `flutter analyze` y `flutter test`
    en verde, con pruebas nuevas para el intervalo y el aviso de demora.
 
-## También en el vault: la contradicción del audio
+## También en las notas: la contradicción del audio
 
 el autor aclaró (2026-10-26): el audio para niños que no leen **aún no se implementa**; es un
 pendiente futuro, no una contradicción con la decisión de quitar la narración. Resuelve la sección
 «Contradice a» de «UX sin lectura para ninos»: hoy la regla se cumple con íconos y colores; el audio
-queda como pendiente para cuando haya una voz que convenza a el autor. Quita la pregunta abierta de
-`contexto.md` si ya no aplica.
+queda como pendiente para cuando haya una voz que convenza al autor. Quita la pregunta abierta de
+el resumen de las notas si ya no aplica.
 
 ## Entrega
 
 Commits en español, autor `el autor` con el correo noreply de GitHub que ya usas, sin
-`Co-Authored-By` ni mención de IA. Push a la misma rama. Vault: nota del hallazgo (causa y cifra
+`Co-Authored-By` ni mención de IA. Push a la misma rama. Notas: nota del hallazgo (causa y cifra
 antes/después), log; validador en verde. No respaldes.
 
 ## Informe
 
-`D:\ArtCraft\_encargos\fors-lentitud-informe.md`: tiempos por etapa antes/después, causa encontrada
+`&lt;ruta&gt;`: tiempos por etapa antes/después, causa encontrada
 (con evidencia), commits y salidas de las pruebas.</pre></details>
-<details id="c11"><summary>11 · 2026-10-29 · MVP web con el rediseño de un integrante del equipo</summary><p class="fuente">Resultado: PR #11 y #12</p><pre># Encargo de Jarvis para fors: MVP web con el rediseño de &lt;integrante 1&gt; (2026-10-29)
+<details id="c11"><summary>Prompt 11 · MVP web con el rediseño de un integrante del equipo <span class="fuente">(2026-10-29)</span></summary><p class="fuente">Resultado: PR #11 y #12</p><pre># Prompt 11 · MVP web con el rediseño de un integrante del equipo
 
 el autor presenta el MVP web **mañana (viernes 2026-10-30)**. Decisión literal: «Es posible que el mvp
 permanezca con lo que se ha solicitado pero usando la mejora de la interfaz de thomas? aun sin
 implementar la voz ni autenticacion de google». Trabaja con autonomía y con prisa razonable; si algo
 falla dos veces, para y escríbelo en el informe.
 
-Repo: `&lt;repositorios&gt;/personal\storydraw-app`. `app/web/` sin
-seguimiento no es tuyo (es de la prueba web de Jarvis): no lo subas ni lo borres.
-**No toques los servidores de Jarvis en :8000 y :5000** (el autor los está usando). Para tus pruebas,
+Repo: `&lt;ruta&gt;`. `app/web/` sin
+seguimiento no es tuyo (es de la prueba web del asistente): no lo subas ni lo borres.
+**No toques los servidores del asistente en :8000 y :5000** (el autor los está usando). Para tus pruebas,
 otro puerto y otra BD.
 
-## Contexto de ramas (verificado por Jarvis)
+## Contexto de ramas (verificado por el asistente)
 
 - Base: `feature/logo-y-modo-invitado` (`b09616f`): tu logo, modo invitado, estado vacío de perfiles,
   pista en el lienzo, arreglo de la lentitud. Entra limpia sobre `main`.
-- `origin/feature/&lt;integrante 1&gt;` (de &lt;integrante 1&gt; Espitia, compañero de el autor) tiene 3 commits sobre `qa` (`94a1021`):
+- `origin/feature/&lt;integrante 1&gt;` (de &lt;integrante 1&gt; Espitia, compañero del autor) tiene 3 commits sobre `qa` (`94a1021`):
   - `6bae9a0` «UI/UX mejorado» → **esto sí entra**.
   - `62b8e84` «voz» → **no entra** (es para la próxima semana).
   - `5e22850` «GMAIL-HOTMAIL» (registro solo Gmail/Hotmail con correo de confirmación) → **no entra**.
-- Simulación de Jarvis: aplicar `6bae9a0` sobre tu rama da conflicto en 9 archivos: `app/lib/core/tema.dart`,
+- Simulación del asistente: aplicar `6bae9a0` sobre tu rama da conflicto en 9 archivos: `app/lib/core/tema.dart`,
   `presentation/acceso`, `biblioteca`, `lienzo`, `perfiles`, `widgets/comunes.dart`, `app/pubspec.yaml`,
   `backend/app/dominio/orquestador.py`, `backend/app/servicios.py`.
-- `6bae9a0` también trae `.claude/skills/ui-ux-pro-max/` (~64.000 líneas de una skill de Claude):
+- `6bae9a0` también trae la carpeta de configuración de otra herramienta (~64.000 líneas de un complemento de otra herramienta):
   **no entra al repo**.
 - No toques `feature/&lt;integrante 1&gt;`, `feature/&lt;integrante 1&gt;-para-Danie`, `feature/&lt;integrante 2&gt;` ni el PR #10.
 
 ## Qué hacer
 
 1. Rama nueva `feature/mvp-web` desde `feature/logo-y-modo-invitado`.
-2. `git cherry-pick -n 6bae9a0` (o `cherry-pick` y luego arreglar), quita `.claude/` del índice, y
+2. `git cherry-pick -n 6bae9a0` (o `cherry-pick` y luego arreglar), quita la carpeta de configuración de otra herramienta del índice, y
    resuelve los conflictos con este criterio:
    - **Aspecto visual de &lt;integrante 1&gt;** (tema, fuentes Fredoka/Nunito, colores, tarjetas, botones, pantallas
      rediseñadas, la pantalla nueva de nombre del personaje si encaja en el flujo).
@@ -507,11 +506,11 @@ otro puerto y otra BD.
    `API_URL` a tu puerto, y saca capturas de: acceso, perfiles vacío, formulario de perfil, perfiles
    con uno, lienzo vacío, identificación/nombre, momento mágico, cuento, biblioteca. Un cuento real
    con Cloudflare como invitado (máximo 2). Guarda las capturas en
-   `C:/Users/&lt;usuario&gt;\AppData\Local\hermes\profiles\jarvis\cache\scratch\storydraw-mvp\` y míralas con
+   `&lt;ruta&gt;` y míralas con
    visión: nada cortado ni desbordado (revisa también ancho de celular, ~400 px).
 5. Push de `feature/mvp-web`. **No abras PR ni mergees; nada a `main`.**
 
-## Vault
+## Notas
 
 Decisión «2026-10-29 MVP web con la interfaz de &lt;integrante 1&gt; sin voz ni restricción de correo», con lo que
 queda para la próxima semana (voz, consistencia dibujo/fondo, despliegue para celular) como
@@ -519,14 +518,14 @@ pendientes; log; validador en verde. No respaldes.
 
 ## Informe
 
-`D:\ArtCraft\_encargos\fors-mvp-web-informe.md`: commits, cómo resolviste cada conflicto (una
+`&lt;ruta&gt;`: commits, cómo resolviste cada conflicto (una
 línea por archivo), salidas de pruebas, rutas de capturas y lo que no quedó.</pre></details>
-<details id="c12"><summary>12 · 2026-11-03 · Integrar la voz y el correo de confirmación del equipo</summary><p class="fuente">Resultado: PR #15 y #16</p><pre>Fors, ya estás en Opus otra vez: el autor no quiere que uses el cupo de Codex. Este es el encargo de StoryDraw que no te llegó por el límite de uso.
+<details id="c12"><summary>Prompt 12 · Integrar la voz y el correo de confirmación del equipo <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: PR #15 y #16</p><pre>[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 
 ENCARGO (repo `personal/storydraw-app`, `&lt;usuario&gt;/storydraw`):
 1. **Resolver los conflictos con el trabajo de &lt;integrante 1&gt;:** el PR #10 (`feature/&lt;integrante 1&gt;` → `feature/&lt;integrante 2&gt;`) y sus ramas, frente al `main` actual (MVP web + arreglo de salir de la sesión). Integra su trabajo en una **rama nueva desde `main`**, resolviendo los conflictos sin perder lo que ya está en `main`.
    - No reescribas ni borres sus ramas, y no hagas force push sobre ellas.
-   - Documenta en tu vault cada conflicto y cómo lo resolviste.
+   - Documenta en tus notas cada conflicto y cómo lo resolviste.
 2. **Agregar el sistema de voz de &lt;integrante 1&gt;** (el que usa `lameenc`; está en tus notas). el autor lo pide ahora, y eso supera el «sin narración por ahora». Corrige la nota de decisión con «Corregido el 2026-11-03…».
    - Agrega `lameenc` a requirements, con pruebas.
    - Ninguna clave en el código: si el proveedor de voz necesita una, va en variables de entorno y en `.env.example`.
@@ -535,12 +534,12 @@ ENCARGO (repo `personal/storydraw-app`, `&lt;usuario&gt;/storydraw`):
 REGLAS:
 - Commits en español, autor `el autor` con correo noreply, sin Co-Authored-By y sin mencionar ninguna IA.
 - Push solo de la rama nueva. Nada en `main` ni en `qa`, y **no abras PR**.
-- Corre `flutter test` y las pruebas del backend, y prueba la voz en local de verdad. Deja un audio de muestra en `D:\`.
-- Si delegas, que sea en Opus. No uses Codex.
-- Actualiza el vault, valídalo y respáldalo. Si algo falla dos veces, detente.
+- Corre `flutter test` y las pruebas del backend, y prueba la voz en local de verdad. Deja un audio de muestra en `&lt;ruta&gt;`.
 
-Cuando termines, respóndeme con la rama, los commits, los conflictos que resolviste, el resultado de las pruebas, la ruta del audio de muestra y las decisiones que necesitas de el autor.</pre></details>
-<details id="c13"><summary>13 · 2026-11-03 · Preparar el despliegue gratuito</summary><p class="fuente">Resultado: PR #17 y #18</p><pre>Fors, nuevo encargo de StoryDraw: preparar el **despliegue gratuito**. el autor lo aprobó. Tú preparas el código y la guía; las cuentas y los secretos los pone el autor en los paneles, y nadie pega claves en el chat, el repo ni el vault.
+- Actualiza las notas, valídalo y respáldalo. Si algo falla dos veces, detente.
+
+Cuando termines, respóndeme con la rama, los commits, los conflictos que resolviste, el resultado de las pruebas, la ruta del audio de muestra y las decisiones que necesitas del autor.</pre></details>
+<details id="c13"><summary>Prompt 13 · Preparar el despliegue gratuito <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: PR #17 y #18</p><pre>nuevo encargo de StoryDraw: preparar el **despliegue gratuito**. el autor lo aprobó. Tú preparas el código y la guía; las cuentas y los secretos los pone el autor en los paneles, y nadie pega claves en el chat, el repo ni las notas.
 
 ARQUITECTURA ELEGIDA:
 - **Backend FastAPI:** Hugging Face Space con Docker (CPU gratis: 16 GB de RAM y 2 vCPU, alcanza para rembg).
@@ -563,23 +562,23 @@ ARQUITECTURA ELEGIDA:
   - Deja el script y la guía, pero NO generes el keystore de producción: es un secreto, y el autor lo crea siguiendo tu guía.
 
 ENTREGABLES:
-1. Rama nueva desde `main`, con los cambios de código, el workflow de Pages, el README del Space, y un script `desplegar/subir-space.sh` que suba `backend/` al Space con `hf upload`, usando la sesión `hf auth login` de el autor, sin tokens en archivos.
+1. Rama nueva desde `main`, con los cambios de código, el workflow de Pages, el README del Space, y un script `desplegar/subir-space.sh` que suba `backend/` al Space con `hf upload`, usando la sesión `hf auth login` del autor, sin tokens en archivos.
 2. `docs/DESPLIEGUE.md`:
    - La tabla de **cada variable**, en qué panel va (secret del Space, variable del Space o variable de GitHub) y qué valor de ejemplo lleva, sin valores reales.
    - Cómo generar `JWT_SECRETO`.
    - El orden de los pasos y cómo verificar (`/health`, crear una cuenta, un cuento completo).
 3. Pruebas en verde: pytest y flutter test. Prueba el adaptador S3 contra MinIO con las opciones nuevas.
-4. Push de la rama y **sin PR**. Commits en español, autor `el autor` con correo noreply, sin coautor y sin mencionar ninguna IA. Si delegas, que sea en Opus.
-5. Vault: la decisión de despliegue y la bitácora, validado y respaldado.
+4. Push de la rama y **sin PR**. Commits en español, autor `el autor` con correo noreply, sin coautor y sin mencionar ninguna IA.
+5. Notas: la decisión de despliegue y la bitácora, validado y respaldado.
 
 **No crees** cuentas, Spaces, buckets ni secretos, y **no despliegues**: eso lo hace el autor con tu guía. Responde con la rama, los commits, la ruta de la guía y la lista exacta de variables que el autor debe pegar en cada panel.</pre></details>
-<details id="c14"><summary>14 · 2026-11-03 · Ajuste: la guía de despliegue no va en el repo</summary><p class="fuente">Resultado: misma rama</p><pre>Fors, el autor cambió una cosa del encargo de despliegue: **la guía de despliegue NO va en el repositorio.** Quita `docs/DESPLIEGUE.md` de la rama; si ya la commiteaste, hazlo con un commit nuevo. En su lugar, mándame la guía completa en tu respuesta final: los pasos en orden, la tabla de variables por panel con valores de ejemplo y sin valores reales, cómo generar `JWT_SECRETO` y cómo verificar. Yo se la paso a el autor en el chat. Todo lo demás del encargo sigue igual. Si quieres conservarla, puede quedar también en tu vault.</pre></details>
-<details id="c15"><summary>15 · 2026-11-03 · Ajuste: correo de verificación apagado sin bloquear cuentas</summary><p class="fuente">Resultado: misma rama</p><pre>Fors, otro ajuste de el autor al despliegue: **el envío de correos de verificación no es importante por ahora.** No configures Brevo ni SMTP en producción.
+<details id="c14"><summary>Prompt 14 · Ajuste: la guía de despliegue no va en el repo <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: misma rama</p><pre>el autor cambió una cosa del encargo de despliegue: **la guía de despliegue NO va en el repositorio.** Quita `docs/DESPLIEGUE.md` de la rama; si ya la commiteaste, hazlo con un commit nuevo. En su lugar, mándame la guía completa en tu respuesta final: los pasos en orden, la tabla de variables por panel con valores de ejemplo y sin valores reales, cómo generar `JWT_SECRETO` y cómo verificar. Yo se la paso al autor en el chat. Todo lo demás del encargo sigue igual. Si quieres conservarla, puede quedar también en tus notas.</pre></details>
+<details id="c15"><summary>Prompt 15 · Ajuste: correo de verificación apagado sin bloquear cuentas <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: misma rama</p><pre>otro ajuste del autor al despliegue: **el envío de correos de verificación no es importante por ahora.** No configures Brevo ni SMTP en producción.
 - Deja el correo apagado (`PROVEEDOR_CORREO=falso` o el equivalente que exista) **sin que eso impida crear cuentas ni iniciar sesión**. Si hoy la verificación por correo bloquea el registro, haz que en producción se pueda omitir por configuración, con prueba.
 - Quita Brevo de la guía, o déjalo como paso opcional para más adelante.
 
 Lo demás sigue igual.</pre></details>
-<details id="c16"><summary>16 · 2026-11-03 · Ajuste: backend en Render en vez de Hugging Face</summary><p class="fuente">Resultado: misma rama</p><pre>Fors, **cambio de plataforma para el backend.** Hugging Face respondió con un 402 al crear el Space: los Spaces de Docker en CPU gratis ahora exigen PRO. el autor eligió **Render, plan gratuito**.
+<details id="c16"><summary>Prompt 16 · Ajuste: backend en Render en vez de Hugging Face <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: misma rama</p><pre>**cambio de plataforma para el backend.** Hugging Face respondió con un 402 al crear el Space: los Spaces de Docker en CPU gratis ahora exigen PRO. el autor eligió **Render, plan gratuito**.
 
 AJUSTES AL ENCARGO DE DESPLIEGUE (misma rama, `feature/despliegue-gratuito`):
 - **Backend en Render:**
@@ -595,30 +594,30 @@ AJUSTES AL ENCARGO DE DESPLIEGUE (misma rama, `feature/despliegue-gratuito`):
   - **Neon** para la base de datos.
   - El **bucket privado de HF** por S3: `S3_ENDPOINT_URL=https://s3.hf.co/&lt;usuario&gt;`, `S3_BUCKET=StoryDraw`, que ya está creado y es privado.
   - Correo apagado, sin bloquear el registro.
-  - Workflow de GitHub Pages, pendiente de decisión de el autor.
+  - Workflow de GitHub Pages, pendiente de decisión del autor.
   - APK de release.
 - `CORS_ORIGENES` debe incluir el dominio de Render (`https://&lt;servicio&gt;.onrender.com`) y el de GitHub Pages.
 - **La guía, en tu respuesta y no en el repositorio:** los pasos en Render (New → Blueprint o Web Service desde el repo), la tabla de variables y cuáles son secretas, cómo generar `JWT_SECRETO`, y cómo verificar con `/salud`, una cuenta y un cuento.
 
-Reglas de siempre: commits en español, autor `el autor` con correo noreply, sin coautor y sin mencionar ninguna IA. Push solo de la rama y sin PR. Pruebas en verde. Opus si delegas. No crees cuentas ni servicios.</pre></details>
-<details id="c17"><summary>17 · 2026-11-09 · Voz «javier» de Aura-2 y fondos en armonía con el dibujo</summary><p class="fuente">Resultado: PR #21</p><pre># Encargo de Jarvis a fors: voz Javier (Aura-2) y fondos en armonía con el dibujo — StoryDraw
+Reglas de siempre: commits en español, autor `el autor` con correo noreply, sin coautor y sin mencionar ninguna IA. Push solo de la rama y sin PR. Pruebas en verde. No crees cuentas ni servicios.</pre></details>
+<details id="c17"><summary>Prompt 17 · Voz «javier» de Aura-2 y fondos en armonía con el dibujo <span class="fuente">(2026-11-09)</span></summary><p class="fuente">Resultado: PR #21</p><pre># Prompt 17 · Voz «javier» de Aura-2 y fondos en armonía con el dibujo
 
-Eres la única sesión activa de fors. Lee tu `contexto.md`, el final de `log.md` y las notas
+Eres la única sesión activa del asistente. Lee tu resumen de notas, el final de `log.md` y las notas
 [[2026-11-03 Voz de &lt;integrante 1&gt; con Cloudflare MeloTTS]], [[2026-10-29 Fondos con el habitat del protagonista]],
 [[2026-10-22 Fondos con estilo de lapices de colores]] y [[storydraw-app]]. Repo:
-`&lt;repositorios&gt;/personal\storydraw-app`. Informe en
-`D:\StoryDraw-voz\informe-voz-y-fondos.md` (también en tu respuesta final).
+`&lt;ruta&gt;`. Informe en
+`&lt;ruta&gt;` (también en tu respuesta final).
 
-## Pedido de el autor (2026-11-09), literal
+## Pedido del autor (2026-11-09), literal
 
-&gt; «Mejora la voz de la narración de fors, mejora los fondos creados actualmente el dibujo se ve muy
+&gt; «Mejora la voz de la narración del asistente, mejora los fondos creados actualmente el dibujo se ve muy
 &gt; fuera de tono con respecto al fondo, en muchas ocasiones si es un dibujo amarillo se genera en
 &gt; fondo amarillo y ni se ve, y la consistencia actualmente parece que el dibujo se está pegando por
 &gt; encima sin más lo que hace que no se mantenga una armonia, usa una voz masculina calida para la
 &gt; narración»
 
-Jarvis le dio 5 muestras reales de `@cf/deepgram/aura-2-es` en Cloudflare Workers AI
-(`D:\StoryDraw-voz\aura2\*.mp3`, misma frase) y le propuso un plan para los fondos. el autor respondió,
+el asistente le dio 5 muestras reales de `@cf/deepgram/aura-2-es` en Cloudflare Workers AI
+(`&lt;ruta&gt;`, misma frase) y le propuso un plan para los fondos. el autor respondió,
 literal: **«Javier, sí me sirve el plan»**.
 
 ## Parte 1 — Voz
@@ -632,7 +631,7 @@ literal: **«Javier, sí me sirve el plan»**.
 2. Aura-2 aplica el ritmo según el texto: pasa el texto de cada página bien puntuado (frases
    completas, comas donde respira un narrador), sin marcas ni emojis.
 3. Mide en un cuento real: duración por página, tiempo de la etapa `narrar` y costo (lista: US$0,03
-   por 1.000 caracteres). Guarda los MP3 de esa prueba en `D:\StoryDraw-voz\cuento-javier\` y
+   por 1.000 caracteres). Guarda los MP3 de esa prueba en `&lt;ruta&gt;` y
    comprueba con `ffprobe` que cada uno dura &gt; 0 s. La escucha la hace el autor (no la des por hecha).
 
 ## Parte 2 — Fondos en armonía con el dibujo (plan aprobado)
@@ -655,11 +654,11 @@ literal: **«Javier, sí me sirve el plan»**.
    Mantén el estilo de lápices de colores y la regla del hábitat del protagonista.
 4. **Prueba visual con antes y después:** al menos 4 dibujos reales o de prueba con colores
    distintos, **incluido uno amarillo** y uno muy oscuro o muy claro. Guarda en
-   `D:\StoryDraw-voz\fondos-antes-despues\` una imagen por caso con el antes (código actual) y el
+   `&lt;ruta&gt;` una imagen por caso con el antes (código actual) y el
    después lado a lado, más el contraste medido. Revisa tú cada una con visión y dilo con honestidad
    si alguno sigue mal.
 5. Sigue funcionando sin red de pago: Cloudflare en producción, Ollama en local. No subas el tiempo
-   del cuento de forma notable: mide y reporta el antes/después en segundos y neuronas.
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 
 ## Git y límites
 
@@ -670,48 +669,48 @@ literal: **«Javier, sí me sirve el plan»**.
 - **No toques producción** (Render, Neon, variables del host) ni enciendas la voz allí. En el informe
   deja la lista de variables que habría que poner en Render para encenderla.
 - Pruebas del backend en verde (y las de Flutter si tocas la app). Nada de claves en el código.
-- Vault: decisión nueva de voz (Aura-2 Javier; MeloTTS superada en lo que corresponde, con la frase
-  de el autor), decisión o actualización de fondos armónicos, bitácora, `contexto.md` y `index.md`.
-  Validador en 0 errores; **sin respaldo** (lo hace Jarvis).</pre></details>
-<details id="c18"><summary>18 · 2026-11-09 · Segunda vuelta de voz y fondos</summary><p class="fuente">Resultado: PR #21</p><pre># Encargo de Jarvis a fors: segunda vuelta de voz y fondos — StoryDraw
+- Notas: decisión nueva de voz (Aura-2 Javier; MeloTTS superada en lo que corresponde, con la frase
+  del autor), decisión o actualización de fondos armónicos, bitácora, el resumen de las notas y `index.md`.
+  Validador en 0 errores; **sin respaldo** (lo hace el asistente).</pre></details>
+<details id="c18"><summary>Prompt 18 · Segunda vuelta de voz y fondos <span class="fuente">(2026-11-09)</span></summary><p class="fuente">Resultado: PR #21</p><pre># Prompt 18 · Segunda vuelta de voz y fondos
 
-Eres la única sesión activa de fors. Lee tu informe anterior `D:\StoryDraw-voz\informe-voz-y-fondos.md`
-y el encargo `D:\StoryDraw-voz\encargo-voz-y-fondos.md`: ya hiciste ese trabajo (rama
+Eres la única sesión activa del asistente. Lee tu informe anterior `&lt;ruta&gt;`
+y el encargo `&lt;ruta&gt;`: ya hiciste ese trabajo (rama
 `feature/voz-javier-y-fondos-armonicos`, commit `7577464`). Sigue en la **misma rama**. Informe en
-`D:\StoryDraw-voz\informe-voz-y-fondos-2.md` (y en tu respuesta final).
+`&lt;ruta&gt;` (y en tu respuesta final).
 
-## Decisiones de el autor (2026-11-09), literales
+## Decisiones del autor (2026-11-09), literales
 
-- Tras ver tu informe y la revisión de Jarvis: **«Se enciende limitada, se permanece en plan
-  gratuito, dale esos ajustes a fors»**.
-- «Esos ajustes» son los que Jarvis le propuso:
+- Tras ver tu informe y la revisión del asistente: **«Se enciende limitada, se permanece en plan
+  gratuito, dale esos ajustes al asistente»**.
+- «Esos ajustes» son los que el asistente le propuso:
   1. que la paleta **respete la hora y el ambiente de la escena** (la noche sigue siendo noche; el
      dibujo se destaca, por ejemplo, con un halo o luz suave, no volviendo de día la escena);
   2. que se **cambie también el color del lugar en el texto/escena** cuando choque con el dibujo,
      en vez de solo apagar el fondo después;
   3. que **no haya sombra de contacto** para lo que vuela o nada (aves, peces, nubes…).
-- Defectos que vio Jarvis en tus imágenes: el gato negro pasó de calle nocturna a calle de día; el
+- Defectos que vio el asistente en tus imágenes: el gato negro pasó de calle nocturna a calle de día; el
   pollito sigue sobre trigal amarillo y la página corregida queda pálida y fría; flux escribe letras
   («FAR.»).
 
-## ⚠️ Cupo de Cloudflare
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 
-Hoy se agotaron las 10.000 neuronas gratis con tus pruebas y producción comparte la cuenta. Se
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 reinicia a las **00:00 UTC (19:00 Colombia)**. Por eso:
 - **Ninguna llamada a Cloudflare antes de las 00:00 UTC.** Trabaja con los fondos ya generados que
-  guardaste (`D:\StoryDraw-voz\fondos-antes-despues\trabajo\`), con dobles de prueba y, si hace falta
+  guardaste (`&lt;ruta&gt;`), con dobles de prueba y, si hace falta
   un generador real, con Ollama local.
-- Después del reinicio, como mucho **1.500 neuronas** de pruebas reales en total (producción necesita
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
   el resto). Si no te da para comprobar algo, dilo en el informe y deja el comando listo.
 
 ## Qué hacer
 
 ### Voz limitada (plan gratuito)
 1. Tope diario de cuentos con voz configurable (`VOZ_CUENTOS_POR_DIA`, por defecto **3**), contado en
-   la base de datos por día UTC (se reinicia con el cupo de Cloudflare). Los cuentos que pasen el tope
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
    salen **sin voz y sin error**, y la app no muestra el botón de escuchar en ellos (o muestra un aviso
    amable sin texto que el niño deba leer: sigue la nota de UX sin lectura).
-2. Además, una reserva de seguridad: si la voz falla por cupo (429), el cuento sigue sin voz.
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 3. Pruebas del tope (contador, reinicio de día, concurrencia: dos cuentos a la vez no deben pasarse
    del tope) y del camino sin voz.
 
@@ -730,7 +729,7 @@ reinicia a las **00:00 UTC (19:00 Colombia)**. Por eso:
    la luz/halo y la textura. Lo que camina o está en el suelo conserva la sombra.
 7. **Letras en el fondo:** añade al prompt pedidos en positivo que reduzcan texto (p. ej. «wordless
    picture-book illustration, no lettering» si flux lo respeta sin empeorar; mide) y reporta si sigue.
-8. Antes y después en `D:\StoryDraw-voz\fondos-antes-despues-2\`, con los mismos 6 casos más **uno de
+8. Antes y después en `&lt;ruta&gt;`, con los mismos 6 casos más **uno de
    noche** (el gato negro en calle nocturna) y uno volador (pájaro en el cielo). Mide ΔE00 y revisa
    cada imagen con visión; di con honestidad lo que siga mal.
 
@@ -740,84 +739,19 @@ reinicia a las **00:00 UTC (19:00 Colombia)**. Por eso:
 - **No toques producción** (Render, Neon, variables). En el informe: la lista exacta de variables
   para Render (`PROVEEDOR_VOZ=cloudflare-aura`, `VOZ_CUENTOS_POR_DIA=3`, …) y el orden de despliegue.
 - `pytest`, `ruff` y, si tocas la app, las pruebas de Flutter en verde. Nada de claves en el código.
-- Vault: actualiza las decisiones de voz y fondos con estas frases de el autor, bitácora, `contexto.md` e
+- Notas: actualiza las decisiones de voz y fondos con estas frases del autor, bitácora, el resumen de las notas e
   `index.md`; validador en 0 errores; sin respaldo.</pre></details>
-<details id="c19"><summary>19 · 2026-11-19 · Rotación automática de cuentas de Cloudflare</summary><p class="fuente">Resultado: PR #22</p><pre># Encargo de Jarvis para fors · StoryDraw · rotación automática de cuentas de Cloudflare
+<details id="c19"><summary>Prompt 19 · Tolerar los límites del plan gratuito del proveedor de IA <span class="fuente">(2026-11-19)</span></summary><p class="fuente">Resultado: PR #22</p><pre>[Texto omitido en la versión pública: el prompt describe la configuración de cuentas y límites del proveedor de IA. El autor puede mostrarlo completo al jurado si lo pide.]</pre></details>
+<details id="c20"><summary>Prompt 20 · APK 0.2.0, esta documentación y el QR de la presentación <span class="fuente">(2026-11-23)</span></summary><p class="fuente">Resultado: release v0.2.0-presentacion</p><pre># Prompt 20 · APK 0.2.0, esta documentación y el QR de la presentación
 
-Eres la única sesión activa de fors en este repositorio. Trabaja en
-`&lt;repositorios&gt;/personal\storydraw-app`.
-
-## Qué pidió el autor (2026-11-19)
-
-«Haz esa implementación para que pueda cambiar de cuenta en cuenta». el autor tiene dos cuentas de
-Cloudflare Workers AI, cada una con su cupo gratuito diario (se repone hacia las 00:00 UTC). Quiere
-que el backend use la primera y, cuando Cloudflare responda que el cupo se agotó (429), pase solo a la
-siguiente cuenta y repita la misma llamada, sin que el niño ni el papá lo noten.
-
-Decisiones de el autor (no las cambies):
-- **Nada visible:** ni en la app, ni en el panel de operación, ni avisos al usuario. Un `logger.info`
-  o `logger.warning` del backend al cambiar de cuenta está bien (sin imprimir tokens ni IDs completos;
-  identifica la cuenta por su posición: «cuenta 2 de 2»).
-- **Sin modo demo ni interruptor para simular el agotamiento.** Solo el sistema automático.
-- **Git:** rama nueva `feature/rotacion-cuentas-cloudflare` desde `origin/main` (no desde `qa`, que va
-  atrás). Commits en español, autor `el autor`, **sin línea de coautor y sin mencionar ninguna
-  IA** aunque algún archivo del repo diga otra cosa. **Push de la rama, sin abrir PR**, sin merge y sin
-  tocar `main`, `qa` ni otras ramas. No despliegues nada en Render.
-
-## Diseño esperado (ajústalo si el código pide otra cosa, y explica por qué)
-
-- El punto único es `ClienteCloudflare` en `backend/app/infra/adaptadores/proveedor_cloudflare.py`:
-  todas las capacidades (visión, texto, moderación, imagen, voz) llaman a través de él y ya detecta el
-  429 (`CupoAgotadoCloudflare`, con `diario`). Haz que reciba una lista ordenada de cuentas
-  (id + token) en vez de una sola.
-- Configuración: la cuenta 1 sigue siendo `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` (no rompas
-  despliegues actuales). Cuentas extra con nombres numerados: `CLOUDFLARE_ACCOUNT_ID_2` /
-  `CLOUDFLARE_API_TOKEN_2`, `_3`… (cómodos de pegar en el panel de Render). Una cuenta extra con id
-  sin token, o al revés, es error de configuración claro al arrancar. Documenta los nombres en
-  `.env.example` (solo nombres y comentarios, **sin valores**). **No edites `.env`**: el autor pega él
-  las credenciales.
-- Ante un 429 **por cupo** (el diario de neuronas): marca esa cuenta como agotada hasta la próxima
-  00:00 UTC, pasa a la siguiente disponible y reintenta la misma petición. Si todas están agotadas,
-  lanza el mismo `CupoAgotadoCloudflare` de hoy, para que el orquestador se comporte como ahora (el
-  cuento sin voz, el aviso de cupo, etc.). Decide con criterio qué hacer con un 429 de ritmo (rate
-  limit por minuto) y justifícalo: no debe marcar la cuenta como agotada todo el día.
-- Seguro con concurrencia: dos cuentos a la vez no deben corromper el estado de las cuentas.
-- El costo por cuento (neuronas desde `cf-ai-neurons`) debe seguir sumándose igual,
-  independientemente de qué cuenta atendió.
-- `VOZ_CUENTOS_POR_DIA` sigue siendo un tope de la app, no por cuenta: no lo cambies, solo menciónalo
-  en el informe.
-
-## Pruebas
-
-- Pruebas unitarias con HTTP falso (sin red): cuenta 1 agotada → la 2 atiende la misma petición;
-  todas agotadas → `CupoAgotadoCloudflare`; reposición al cambiar el día UTC; 429 de ritmo; una sola
-  cuenta configurada se comporta como antes; configuración incompleta falla al arrancar;
-  concurrencia básica.
-- Corre la suite completa del backend y deja el conteo antes/después.
-- Prueba real opcional y mínima: como mucho **una** llamada de texto corta por cuenta, con un tope
-  total de **50 neuronas**, solo si las credenciales están en el entorno. Si no están, no la hagas y
-  dilo. No generes cuentos completos ni imágenes contra Cloudflare: el cupo es de producción.
-
-## Entrega
-
-1. Informe en `C:/Users/&lt;usuario&gt;\AppData\Local\hermes\profiles\jarvis\cache\scratch\fors-rotacion-informe.md`:
-   rama, commits (hash y mensaje), archivos tocados, decisiones de diseño, pruebas (comando y
-   resultado), si se hizo la prueba real y sus neuronas, y la tabla de variables para Render
-   (nombre → qué va, sin valores).
-2. En tu vault: una nota de decisión con frontmatter, enlaces y pie del hub, la línea en `log.md`,
-   `contexto.md` al día, y el validador (`py sistema/check-vault.py --index` y sin `--index`) en verde.
-   No uses git dentro del vault; Jarvis hace el respaldo.
-3. No escribas ningún secreto en el código, el vault, el informe ni los commits.</pre></details>
-<details id="c20"><summary>20 · 2026-11-23 · APK 0.2.0, esta documentación y el QR de la presentación</summary><p class="fuente">Resultado: release v0.2.0-presentacion</p><pre># Encargo de Jarvis a fors: QR de la presentación técnica de StoryDraw (para MAÑANA 24-nov)
-
-Eres la única sesión activa de fors. Arranca con tu `contexto.md`, [[storydraw-app]], [[APK de depuracion de StoryDraw]],
+Eres la única sesión activa del asistente. Arranca con tu resumen de notas, [[storydraw-app]], [[APK de depuracion de StoryDraw]],
 [[Guia de despliegue gratuito de StoryDraw]] y [[Deriva entre la documentacion y el codigo]].
 
 ## Qué pidió el autor (literal)
 
 «Necesito un QR con la documentación técnica importante del proyecto y para descargar el apk».
 Después precisó: «Es storyDraw, Compila el nuevo, un QR que lleve a la documentación y permita descargar
-el apk, es una presentación técnica, la fecha es para mañana». Rúbrica del jurado (captura de el autor),
+el apk, es una presentación técnica, la fecha es para mañana». Rúbrica del jurado (captura del autor),
 cada criterio de 1 a 5:
 
 1. Claridad del problema y su contexto
@@ -835,9 +769,9 @@ cada criterio de 1 a 5:
 ## Entregables
 
 ### A. APK nuevo desde `main`
-- Repo `personal/storydraw-app`. El árbol local está en `feature/rotacion-cuentas-cloudflare`; **no lo
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
   toques**: compila en un worktree del scratch con `git worktree add --detach &lt;scratch&gt;/sd-apk origin/main`
-  (tras `git fetch`). `main` = `b4d9946` según tu vault; confírmalo.
+  (tras `git fetch`). `main` = `b4d9946` según tus notas; confírmalo.
 - Apunta al backend de producción (`https://storydraw.onrender.com`, el mismo que el APK v0.1.0).
 - **Compatibilidad:** Render NO tiene desplegado `main` (autoDeployTrigger off; va atrás). Comprueba con
   el APK real contra producción el flujo principal (registro/inicio de sesión, dibujo, cuento, lámina) y
@@ -859,21 +793,21 @@ cada criterio de 1 a 5:
     casos de uso, criterios de calidad (pruebas: cuántas y de qué tipo, con cifras REALES de correr la
     suite hoy; moderación infantil; rendimiento medido), arquitectura (cliente Flutter en capas,
     backend FastAPI, Neon, Render, Cloudflare; diagrama), integración de IA (qué modelo hace qué:
-    Cloudflare Workers AI, Llama Guard 3, Aura-2 voz, Ollama local; rotación de cuentas; límites del
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
     plan gratuito), funcionamiento y flujo principal paso a paso con capturas reales;
   - **Prompts (criterio SWNT):** página propia con el texto de los prompts usados para construir la
-    app, en orden. Fuente: los encargos que Jarvis te dio a ti (literales; están en
-    `C:/Users/&lt;usuario&gt;\AppData\Local\hermes\profiles\fors\state.db`, tablas `sessions`/`messages`, rol
+    app, en orden. Fuente: los encargos que el asistente te dio a ti (literales; están en
+    `&lt;ruta&gt;`, tablas `sessions`/`messages`, rol
     user, y en tus Bitácoras) y los prompts de sistema del producto (los del backend que generan cuento,
     escenas y moderación, copiados del código). Distingue «prompts de construcción» de «prompts del
-    producto». **Sin el nombre de el autor, su usuario, rutas personales, claves ni datos de
+    producto». **Sin el nombre del autor, su usuario, rutas personales, claves ni datos de
     terceros**; reemplaza rutas por `&lt;usuario&gt;` y omite cualquier secreto.
 - Todo dato con su fuente en el repo o medido hoy. «Manda el código, no los documentos viejos».
 - Comprueba que la URL de Pages responde 200 desde fuera y que el botón descarga el APK correcto
   (mismo SHA-256).
 
 ### C. QR
-- QR a la URL de Pages, en `D:\Universidad\storydraw-presentacion\`: `qr-storydraw.png` (≥1000 px,
+- QR a la URL de Pages, en `&lt;ruta&gt;`: `qr-storydraw.png` (≥1000 px,
   corrección de errores M o superior, margen blanco) y `qr-storydraw.pdf` (una hoja con el QR, el título
   «StoryDraw — documentación técnica y APK» y la URL en texto). Si no hay librería de QR instalada, no
   instales nada sin avisar: genera el QR con lo que haya (p. ej. un paquete ya presente en algún venv
@@ -882,13 +816,12 @@ cada criterio de 1 a 5:
 
 ## Reglas
 - Commits en español, autor `el autor` con el noreply de GitHub, sin coautor ni mención de IA.
-- No despliegues Render ni cambies variables de producción. No gastes cupo de Cloudflare en pruebas más
+[línea omitida en la versión pública: límites o configuración del proveedor de IA]
   allá de 2–3 cuentos reales.
-- Informe en `D:\Universidad\storydraw-presentacion\informe-fors.md`: URL de Pages, URL de la release,
+- Informe en `&lt;ruta&gt;`: URL de Pages, URL de la release,
   SHA-256 del APK, resultado de la prueba del APK contra producción (qué funciona y qué no), cifras de
   pruebas, QR decodificado, y lo que falte. Si algo falla dos veces por la misma causa, para y escríbelo.
-- Vault: nota de la tarea, bitácora, contexto y validador en verde; sin respaldo de memorias (lo hace Jarvis).
-- Si delegas, en primer plano y en Opus.</pre></details>
+- Notas: nota de la tarea, bitácora, contexto y validador en verde; sin respaldo de memorias (lo hace el asistente).</pre></details>
 </section>
 <section id="producto"><h2>Prompts del producto</h2>
 <p>El cuento se pide con esquema JSON estricto (exactamente 3 páginas con <code>texto</code> y <code>escena</code>); la visión devuelve hipótesis y atributos; la moderación, <code>{"apto", "categorias"}</code>. Llama Guard 3 recibe el texto tal cual, sin prompt de sistema propio (usa su taxonomía S1–S14).</p>

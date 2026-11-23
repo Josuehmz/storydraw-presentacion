@@ -12,7 +12,7 @@
 <header class="portada">
   <img src="img/icono.png" alt="Logo de StoryDraw">
   <h1>StoryDraw</h1>
-  <p>Un niño de 6 a 12 años dibuja a su personaje y, en menos de un minuto, recibe un cuento de tres páginas con su propio dibujo dentro de cada lámina.</p>
+  <p>Un niño de 6 a 12 años dibuja a su personaje y recibe un cuento de tres páginas con su propio dibujo dentro de cada ilustración.</p>
   <a class="descarga" href="https://github.com/Josuehmz/storydraw/releases/download/v0.2.0-presentacion/storydraw-0.2.0-b4d9946-debug.apk">⬇ Descargar APK
     <small>Android 8.0 o superior · versión 0.2.0 · 150,5 MiB</small></a>
   <div class="enlaces">
@@ -26,244 +26,180 @@
 <section id="apk">
   <h2>Instalar el APK</h2>
   <ol>
-    <li>Toca <b>Descargar APK</b> desde el celular Android.</li>
-    <li>Abre el archivo descargado. Si Android lo pide, permite instalar apps de ese origen (<i>Ajustes → Instalar apps desconocidas</i>) y vuelve atrás.</li>
-    <li>Instala, abre StoryDraw y crea una cuenta (no hace falta confirmar el correo).</li>
-    <li>Si el servidor estaba dormido, la primera respuesta tarda cerca de un minuto (plan gratuito de Render).</li>
+    <li>Toca <b>Descargar APK</b> desde un celular Android.</li>
+    <li>Abre el archivo. Si Android lo pide, permite instalar apps de ese origen (<i>Instalar apps desconocidas</i>).</li>
+    <li>Abre StoryDraw y crea una cuenta; entra sin confirmar el correo.</li>
+    <li>Si el servidor estaba en reposo, la primera respuesta tarda cerca de un minuto.</li>
   </ol>
-  <div class="tabla"><table>
-    <tr><th>Versión</th><td>0.2.0 (código 2), compilada desde <code>main</code> en el commit <code>b4d9946</code></td></tr>
-    <tr><th>Tipo</th><td>APK de depuración: instala sin tienda; no es la versión de publicación. El build de release minificado con R8 no arranca (falla <code>shared_preferences_android</code>); queda pendiente</td></tr>
-    <tr><th>Tamaño</th><td>157.849.389 bytes (150,5 MiB): el modo depuración incluye varias arquitecturas y el motor sin optimizar</td></tr>
-    <tr><th>SHA-256</th><td><code>422f01a57532e0b4a3ba663f21da262814123d3d26565ea23b58de324f023625</code></td></tr>
-    <tr><th>Backend</th><td><code>https://storydraw.onrender.com</code> (producción)</td></tr>
-    <tr><th>Release</th><td><a href="https://github.com/Josuehmz/storydraw/releases/tag/v0.2.0-presentacion">v0.2.0-presentacion en GitHub</a></td></tr>
-  </table></div>
+  <p class="fuente">Versión 0.2.0 de prueba (compilación de depuración, fuera de la tienda) · SHA-256 <code>422f01a57532e0b4a3ba663f21da262814123d3d26565ea23b58de324f023625</code> · <a href="https://github.com/Josuehmz/storydraw/releases/tag/v0.2.0-presentacion">release en GitHub</a></p>
 </section>
 
 <nav class="indice">
-  <b>Contenido (rúbrica)</b>
+  <b>Contenido</b>
   <ol>
     <li><a href="#problema">Problema y contexto</a></li>
     <li><a href="#casos">Casos de uso</a></li>
     <li><a href="#calidad">Criterios de calidad</a></li>
     <li><a href="#arquitectura">Arquitectura técnica</a></li>
     <li><a href="#ia">Integración de IA</a></li>
-    <li><a href="#funcionamiento">Funcionamiento de la aplicación</a></li>
-    <li><a href="#flujo">Flujo principal paso a paso</a></li>
-    <li><a href="#comunicacion">Documentos técnicos</a></li>
-    <li><a href="prompts.html">Prompts usados para construir la app (SWNT)</a></li>
+    <li><a href="#funcionamiento">Funcionamiento</a></li>
+    <li><a href="#flujo">Flujo principal</a></li>
+    <li><a href="#documentos">Documentos técnicos</a></li>
+    <li><a href="prompts.html">Prompts usados (SWNT)</a></li>
   </ol>
 </nav>
 
 <section id="problema">
   <h2><span class="n">1</span>Problema y contexto</h2>
-  <p>Los niños dibujan mucho, pero el dibujo se queda en la hoja. Las apps de cuentos con IA, en cambio, inventan personajes ajenos al niño y casi siempre exigen leer. StoryDraw parte de lo que el niño ya hizo: <b>su dibujo es el protagonista</b>.</p>
+  <p>Los niños dibujan mucho, pero el dibujo se queda en la hoja. Las apps de cuentos con IA inventan personajes ajenos y casi siempre exigen leer.</p>
+  <p>StoryDraw parte de lo que el niño ya hizo: <b>su dibujo es el protagonista</b>. La IA lo reconoce, escribe un cuento corto para su edad, lo ilustra con el dibujo dentro y lo narra en voz alta.</p>
   <ul>
-    <li><b>Usuarios:</b> niños de 6 a 12 años (el perfil solo acepta edades de 6 a 12) y el adulto responsable, que crea la cuenta y acepta el consentimiento.</li>
-    <li><b>Qué resuelve:</b> dibujo → personaje reconocido → cuento corto adaptado a la edad → tres láminas en estilo de lápices de colores con el dibujo recortado encima → narración en voz.</li>
-    <li><b>Restricciones:</b> contenido para menores (moderación obligatoria que no se puede apagar), datos del menor mínimos (el dibujo no se guarda; solo el cuento final) y presupuesto cero: todo corre en planes gratuitos (Render, Neon, Cloudflare Workers AI, GitHub Pages).</li>
-    <li><b>UX sin lectura:</b> íconos grandes, colores y voz, porque los más pequeños aún no leen con soltura.</li>
+    <li><b>Usuarios:</b> niños de 6 a 12 años y el adulto responsable, que crea la cuenta y da el consentimiento.</li>
+    <li><b>Restricciones:</b> contenido para menores con moderación obligatoria, datos mínimos del niño (el dibujo no se guarda) y costo cero (servicios en plan gratuito).</li>
+    <li><b>Para niños que aún no leen bien:</b> íconos grandes, colores y voz.</li>
   </ul>
 </section>
 
 <section id="casos">
   <h2><span class="n">2</span>Casos de uso</h2>
   <div class="tabla"><table>
-    <tr><th>#</th><th>Actor</th><th>Caso de uso</th><th>Dónde está en el código</th></tr>
-    <tr><td>CU-01</td><td>Adulto</td><td>Crear cuenta aceptando el consentimiento, iniciar y cerrar sesión, borrar la cuenta</td><td><code>POST /v1/auth/registro</code>, <code>/login</code>, <code>DELETE /v1/auth/cuenta</code></td></tr>
-    <tr><td>CU-02</td><td>Adulto</td><td>Crear y borrar perfiles de niño (apodo y edad 6–12)</td><td><code>/v1/perfiles</code></td></tr>
-    <tr><td>CU-03</td><td>Niño</td><td>Dibujar con el dedo en el lienzo (colores, grosor, deshacer)</td><td><code>app/lib/presentation/lienzo</code></td></tr>
-    <tr><td>CU-04</td><td>Niño</td><td>Identificación asistida: la IA propone 2 a 4 opciones con su confianza y el niño elige o escribe la suya</td><td><code>POST /v1/dibujos/identificar</code></td></tr>
-    <tr><td>CU-05</td><td>Niño</td><td>Ponerle nombre al personaje (opcional)</td><td><code>presentation/nombre</code></td></tr>
-    <tr><td>CU-06</td><td>Sistema</td><td>Generar el cuento: identificar, escribir, moderar, ilustrar y narrar, con reintentos y degradación</td><td><code>POST /v1/cuentos</code> (202) y <code>dominio/orquestador.py</code></td></tr>
-    <tr><td>CU-07</td><td>Niño</td><td>Ver el «momento mágico» mientras espera y luego leer o escuchar las tres páginas</td><td><code>presentation/momento_magico</code>, <code>presentation/cuento</code></td></tr>
-    <tr><td>CU-08</td><td>Niño / adulto</td><td>Biblioteca de cuentos por perfil, legible sin conexión (caché Hive), y borrado de un cuento</td><td><code>GET /v1/perfiles/{id}/cuentos</code>, <code>DELETE /v1/cuentos/{id}</code></td></tr>
-    <tr><td>CU-09</td><td>Operador</td><td>Panel de operación: latencia media y p95, costo por cuento y cola de moderación (solo administradores)</td><td><code>/v1/operacion/*</code></td></tr>
+    <tr><th>Actor</th><th>Caso de uso</th></tr>
+    <tr><td>Adulto</td><td>Crear la cuenta con consentimiento, entrar, salir y borrar la cuenta</td></tr>
+    <tr><td>Adulto</td><td>Crear y borrar perfiles de niño (apodo y edad)</td></tr>
+    <tr><td>Niño</td><td>Dibujar con el dedo (colores, grosores, deshacer)</td></tr>
+    <tr><td>Niño</td><td>Confirmar qué dibujó: la IA propone opciones con su nivel de confianza y el niño elige o escribe la suya</td></tr>
+    <tr><td>Niño</td><td>Ponerle nombre al personaje (opcional)</td></tr>
+    <tr><td>Sistema</td><td>Generar el cuento: reconocer, escribir, moderar, ilustrar y narrar</td></tr>
+    <tr><td>Niño</td><td>Esperar con una animación y luego leer o escuchar las tres páginas</td></tr>
+    <tr><td>Niño / adulto</td><td>Volver a ver sus cuentos en la biblioteca, también sin conexión, y borrar los que quiera</td></tr>
+    <tr><td>Operador</td><td>Ver tiempos, costo por cuento y cuentos rechazados por la moderación</td></tr>
   </table></div>
 </section>
 
 <section id="calidad">
   <h2><span class="n">3</span>Criterios de calidad</h2>
-  <h3>Pruebas automatizadas (corridas hoy, 2026-11-23, sobre <code>main</code> <code>b4d9946</code>)</h3>
-  <div class="tabla"><table>
-    <tr><th>Suite</th><th>Resultado</th><th>Qué cubre</th></tr>
-    <tr><td>Backend · pytest (Python 3.12)</td><td class="ok">295 pasan, 2 omitidas, 0 fallan (297 en 19 archivos, 304 s)</td><td>Cuentas y JWT (9), verificación de correo (20) y registro sin verificación (8), invitado solo local (13), límite de tasa (4), borrado (5), pipeline y ajustes (17), tiempos y topes (9), moderación (7), adaptadores con HTTP simulado de Cloudflare y Ollama (47 + 7), rotación de cuentas de Cloudflare (19), voz y cupo diario (38 + 17), armonía de color y escenas (16 + 36), despliegue (19) e infraestructura (6)</td></tr>
-    <tr><td>App · <code>flutter test</code> (Flutter 3.44.4)</td><td class="ok">83 pasan, 0 fallan (16 archivos)</td><td>49 de widgets (acceso, perfiles, lienzo, identificación, nombre, momento mágico, cuento y biblioteca, salir de la sesión), 25 de datos (repositorios con la API simulada), 5 de aplicación (flujo y sesión) y 4 de núcleo</td></tr>
-    <tr><td>Análisis estático</td><td class="ok">ruff check y ruff format: limpios (68 archivos) · flutter analyze: sin problemas</td><td>Reglas E, F, W, I, B, UP, ASYNC, S (seguridad), SIM y RUF</td></tr>
-  </table></div>
-  <p class="fuente">Las 2 omitidas necesitan un MinIO real (<code>STORYDRAW_MINIO_URL</code>). Fuente: <code>backend/tests</code> y <code>app/test</code> del repo.</p>
-
-  <h3>Moderación infantil (falla cerrada)</h3>
-  <ol>
-    <li>Lista local de términos bloqueados (sin tildes ni mayúsculas), antes de llamar a ninguna IA.</li>
-    <li><b>Llama Guard 3 8B</b> (taxonomía de riesgos S1–S14) y, a la vez, una <b>revisión infantil con LLM</b> (prompt propio para 6–12 años). Las dos tienen que aprobar.</li>
-    <li>Se modera la entrada (personaje, nombre y rasgos del dibujo) y el cuento completo. Si el cuento se rechaza, se escribe otro (hasta 2 veces); si nada pasa, el cuento queda <i>rechazado</i> y el niño no ve nada.</li>
-    <li>Si un moderador no responde, tarda de más o devuelve algo ilegible, cuenta como rechazo. La voz solo lee texto ya aprobado.</li>
-  </ol>
-  <h3>Privacidad y seguridad</h3>
+  <p><b>Pruebas (corridas el 2026-11-23 sobre la versión 0.2.0):</b> backend 295 pruebas en verde (2 omitidas por requerir un servicio externo) · app 83 pruebas en verde · análisis estático sin errores.</p>
   <ul>
-    <li>Contraseñas con Argon2id; sesión con JWT; consentimiento del adulto obligatorio en el registro.</li>
-    <li>El dibujo viaja en memoria y no se persiste; las láminas están en un bucket privado y solo la API las sirve a su dueño. Medido hoy: pedir una lámina sin sesión da <b>401</b>.</li>
-    <li>Límites de tasa: 10/min en autenticación e identificación; 5 cuentos/min por IP y 30 al día por cuenta.</li>
-    <li>Ninguna clave en el cliente: las claves de IA viven solo en las variables del backend. En producción se rechazan los proveedores falsos y el modo invitado.</li>
+    <li><b>Seguridad infantil:</b> todo texto pasa por dos moderadores de IA distintos más una lista de palabras bloqueadas, antes de que el niño vea algo. Si un moderador no responde, el cuento no se muestra.</li>
+    <li><b>Privacidad:</b> el dibujo no se guarda; las ilustraciones son privadas y solo las ve su dueño. Contraseñas cifradas y consentimiento del adulto obligatorio.</li>
+    <li><b>Robustez:</b> cada paso de IA se reintenta por separado y, si uno falla, el cuento sale igual con un aviso (por ejemplo, sin voz) en lugar de romperse. El backend tolera los límites del plan gratuito del proveedor de IA y avisa al usuario si no hay capacidad.</li>
+    <li><b>Rendimiento medido en producción:</b> reconocer el dibujo, unos 4 s; cuento completo con ilustraciones y voz, unos 40 s.</li>
+    <li><b>Abuso:</b> límite de peticiones por usuario y por día.</li>
   </ul>
-  <h3>Rendimiento medido hoy en producción</h3>
-  <div class="tabla"><table>
-    <tr><th>Medida</th><th>Valor</th></tr>
-    <tr><td>Despertar el servidor (primera petición tras dormir)</td><td>43,6 s</td></tr>
-    <tr><td><code>/salud</code> con el servidor despierto</td><td>3,2 s</td></tr>
-    <tr><td>Registro · inicio de sesión</td><td>1,9 s · 1,6 s</td></tr>
-    <tr><td>Identificar el dibujo (visión)</td><td>4,2 s → «un pez» con confianza 0,95</td></tr>
-    <tr><td>Cuento completo (de enviar a <i>listo</i>, con voz)</td><td><b>38,9 s</b>, 3 páginas de 47 a 50 palabras, sin avisos</td></tr>
-    <tr><td>Lámina · audio por página</td><td>PNG 1024×1024 de 1,3 a 1,9 MB · MP3 de 98 a 124 KB</td></tr>
-  </table></div>
-  <p class="fuente">Medido con un script HTTP contra <code>https://storydraw.onrender.com</code> el 2026-11-23 (una cuenta de prueba y un cuento). Topes del backend: 45 s por llamada a Cloudflare, 180 s por cuento, 2 reintentos por paso.</p>
-  <div class="aviso"><b>Limitaciones conocidas:</b> la descripción de la escena que va al modelo de imagen y la imagen generada no pasan por la moderación (el prompt prohíbe personajes y texto); un cuento en curso se pierde si el servidor se reinicia; las láminas se guardan en PNG (pesan más que WebP); no hay CI.</div>
 </section>
 
 <section id="arquitectura">
   <h2><span class="n">4</span>Arquitectura técnica</h2>
   <p class="fuente">En el celular, desliza el diagrama hacia los lados.</p>
-  <div class="diagrama-caja"><svg class="diagrama" viewBox="0 0 820 520" role="img" aria-label="Diagrama de arquitectura de StoryDraw">
+  <div class="diagrama-caja"><svg class="diagrama" viewBox="0 0 820 400" role="img" aria-label="Diagrama de arquitectura de StoryDraw">
     <defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#6b3fd4"/></marker></defs>
-    <style>.c{fill:#efe9ff;stroke:#6b3fd4;stroke-width:2;rx:12}.t{font:600 15px system-ui,sans-serif;fill:#1f1d2b}.s{font:12px system-ui,sans-serif;fill:#5d5a6e}.l{stroke:#6b3fd4;stroke-width:2;fill:none;marker-end:url(#f)}.e{fill:#fff6e5;stroke:#a15c00;stroke-width:2}</style>
-    <rect class="c" x="20" y="20" width="230" height="200"/>
-    <text class="t" x="35" y="45">App Flutter (Android y web)</text>
-    <text class="s" x="35" y="70">presentation: pantallas y widgets</text>
-    <text class="s" x="35" y="92">application: Riverpod 3 (estado, flujo)</text>
-    <text class="s" x="35" y="114">domain: entidades y contratos</text>
-    <text class="s" x="35" y="136">data: Dio + reintentos, caché Hive</text>
-    <text class="s" x="35" y="158">core: API_URL por --dart-define</text>
-    <text class="s" x="35" y="190">Web: GitHub Pages</text>
-    <text class="s" x="35" y="208">APK: release v0.2.0</text>
-    <rect class="c" x="300" y="20" width="250" height="300"/>
-    <text class="t" x="315" y="45">Backend FastAPI (Render Free)</text>
-    <text class="s" x="315" y="70">api/: rutas, JWT, límites (slowapi)</text>
-    <text class="s" x="315" y="92">servicios.py: casos de uso</text>
-    <text class="s" x="315" y="114">dominio/: orquestador asyncio,</text>
-    <text class="s" x="327" y="132">moderación, composición, armonía,</text>
-    <text class="s" x="327" y="150">puertos (IVision, ITexto, IImagen…)</text>
-    <text class="s" x="315" y="172">infra/: adaptadores por proveedor,</text>
-    <text class="s" x="327" y="190">repositorio SQLAlchemy, Argon2id</text>
-    <text class="s" x="315" y="212">contenedor.py: elige las clases</text>
-    <text class="s" x="327" y="230">concretas según variables de entorno</text>
-    <text class="s" x="315" y="258">Docker 512 MB · 0,1 CPU</text>
-    <text class="s" x="315" y="278">Alembic (migraciones 0001–0004)</text>
-    <text class="s" x="315" y="298">Pillow: recorte y composición</text>
-    <rect class="c" x="600" y="20" width="200" height="90"/>
-    <text class="t" x="615" y="45">Neon</text>
-    <text class="s" x="615" y="68">PostgreSQL: cuentas, perfiles,</text>
-    <text class="s" x="615" y="86">cuentos, métricas, cupo de voz</text>
-    <rect class="c" x="600" y="130" width="200" height="80"/>
-    <text class="t" x="615" y="155">Almacén S3 privado</text>
-    <text class="s" x="615" y="178">láminas PNG y audio MP3</text>
-    <text class="s" x="615" y="196">(bucket de Hugging Face)</text>
-    <rect class="e" x="300" y="360" width="500" height="140" rx="12"/>
-    <text class="t" x="315" y="385">Cloudflare Workers AI (cuentas en rotación)</text>
-    <text class="s" x="315" y="410">Visión y texto: gemma-4-26b-a4b-it</text>
-    <text class="s" x="315" y="430">Moderación: llama-guard-3-8b + revisión infantil (LLM)</text>
-    <text class="s" x="315" y="450">Fondos: flux-1-schnell (estilo lápices de colores)</text>
-    <text class="s" x="315" y="470">Voz: deepgram aura-2-es «javier» (tope 3 cuentos/día)</text>
-    <text class="s" x="315" y="490">Local sin internet: Ollama con gemma3:4b</text>
-    <path class="l" d="M250,120 L298,120"/><text class="s" x="252" y="112">HTTPS</text>
-    <path class="l" d="M550,65 L598,65"/>
-    <path class="l" d="M550,170 L598,170"/>
-    <path class="l" d="M425,320 L425,358"/>
+    <style>.c{fill:#efe9ff;stroke:#6b3fd4;stroke-width:2}.t{font:600 16px system-ui,sans-serif;fill:#1f1d2b}.s{font:13px system-ui,sans-serif;fill:#5d5a6e}.l{stroke:#6b3fd4;stroke-width:2;fill:none;marker-end:url(#f)}.e{fill:#fff6e5;stroke:#a15c00;stroke-width:2}</style>
+    <rect class="c" x="20" y="30" width="230" height="190" rx="12"/>
+    <text class="t" x="36" y="58">App Flutter</text>
+    <text class="s" x="36" y="84">Android (APK) y web</text>
+    <text class="s" x="36" y="112">Pantallas</text>
+    <text class="s" x="36" y="134">Estado y flujo</text>
+    <text class="s" x="36" y="156">Modelo del dominio</text>
+    <text class="s" x="36" y="178">Datos: API y caché local</text>
+    <rect class="c" x="300" y="30" width="250" height="190" rx="12"/>
+    <text class="t" x="316" y="58">Backend FastAPI</text>
+    <text class="s" x="316" y="84">API: cuentas, perfiles, cuentos</text>
+    <text class="s" x="316" y="112">Orquestador del cuento</text>
+    <text class="s" x="316" y="134">Moderación y composición</text>
+    <text class="s" x="316" y="156">Adaptadores por proveedor</text>
+    <text class="s" x="316" y="178">(se cambian sin tocar el dominio)</text>
+    <rect class="c" x="600" y="30" width="200" height="80" rx="12"/>
+    <text class="t" x="616" y="58">PostgreSQL</text>
+    <text class="s" x="616" y="82">cuentas, perfiles, cuentos</text>
+    <rect class="c" x="600" y="140" width="200" height="80" rx="12"/>
+    <text class="t" x="616" y="168">Almacén privado</text>
+    <text class="s" x="616" y="192">ilustraciones y audio</text>
+    <rect class="e" x="300" y="270" width="500" height="110" rx="12"/>
+    <text class="t" x="316" y="298">Cloudflare Workers AI</text>
+    <text class="s" x="316" y="322">visión y texto · moderación · ilustración · voz</text>
+    <text class="s" x="316" y="346">En local, sin internet: Ollama</text>
+    <path class="l" d="M250,125 L298,125"/><text class="s" x="254" y="117">HTTPS</text>
+    <path class="l" d="M550,70 L598,70"/>
+    <path class="l" d="M550,180 L598,180"/>
+    <path class="l" d="M425,220 L425,268"/>
   </svg></div>
   <ul>
-    <li><b>Cliente en capas</b> (<code>app/lib</code>): <code>presentation → application → domain ← data</code>. La URL del backend se inyecta al compilar; el cliente no conoce ningún proveedor de IA.</li>
-    <li><b>Backend hexagonal</b>: el dominio define puertos (<code>IVision</code>, <code>ITexto</code>, <code>IModerador</code>, <code>IImagen</code>, <code>IVoz</code>, <code>ICorreo</code>) y cada proveedor es un adaptador. Cambiar de proveedor = una clase y una variable (<code>PROVEEDOR_*</code>). Cada adaptador tiene un gemelo falso para las pruebas.</li>
-    <li><b>Asíncrono</b>: <code>POST /v1/cuentos</code> responde 202 al instante y la app consulta <code>GET /v1/cuentos/{id}</code> mientras muestra el momento mágico.</li>
-    <li><b>Despliegue gratuito</b>: Render (Docker, <code>render.yaml</code>, despliegue manual para no gastar cuota), Neon (PostgreSQL), bucket S3 privado, GitHub Pages para la web (Actions corre <code>flutter test</code> antes de publicar).</li>
+    <li><b>App (Flutter):</b> en capas (pantallas, estado, dominio, datos). No conoce a ningún proveedor de IA: solo habla con el backend, así que cambiar de modelo no exige publicar otra app.</li>
+    <li><b>Backend (Python, FastAPI):</b> arquitectura hexagonal. El dominio define qué necesita (ver, escribir, moderar, ilustrar, narrar) y cada proveedor es un adaptador intercambiable; para las pruebas hay adaptadores simulados.</li>
+    <li><b>Asíncrono:</b> la app pide el cuento, recibe respuesta al instante y consulta el avance mientras muestra la animación de espera.</li>
+    <li><b>Datos:</b> PostgreSQL para cuentas y cuentos; las ilustraciones y el audio van a un almacén privado.</li>
+    <li><b>Despliegue gratuito:</b> backend en Render, base de datos en Neon, web en GitHub Pages; la web se publica solo si pasan las pruebas.</li>
   </ul>
 </section>
 
 <section id="ia">
   <h2><span class="n">5</span>Integración de IA</h2>
   <div class="tabla"><table>
-    <tr><th>Paso</th><th>Modelo (producción)</th><th>Qué hace</th></tr>
-    <tr><td>1 · Identificar</td><td><code>@cf/google/gemma-4-26b-a4b-it</code> (visión)</td><td>Propone 2 a 4 hipótesis con confianza y lee los rasgos del dibujo (colores, partes, emoción) en JSON con esquema</td></tr>
-    <tr><td>2 · Escribir</td><td><code>@cf/google/gemma-4-26b-a4b-it</code></td><td>Cuento de exactamente 3 páginas (40–70 palabras) para la edad del perfil, con el nombre y los rasgos reales; describe en inglés el fondo de cada página (hábitat del protagonista)</td></tr>
-    <tr><td>3 · Moderar</td><td><code>@cf/meta/llama-guard-3-8b</code> + gemma-4 con prompt infantil</td><td>Dos capas que deben aprobar, más la lista local; falla cerrada</td></tr>
-    <tr><td>4 · Ilustrar</td><td><code>@cf/black-forest-labs/flux-1-schnell</code> (4 pasos)</td><td>Fondos en lápices de colores con una paleta que contrasta con el dibujo (ΔE00 ≥ 30) y un espacio libre; Pillow recorta el dibujo y lo compone encima</td></tr>
-    <tr><td>5 · Narrar</td><td><code>@cf/deepgram/aura-2-es</code>, voz «javier»</td><td>MP3 por página, en paralelo con los fondos; tope de 3 cuentos con voz al día y, sin cupo, el cuento sale sin voz y sin error</td></tr>
+    <tr><th>Paso</th><th>Modelo</th><th>Qué hace</th></tr>
+    <tr><td>Reconocer</td><td>Gemma 4</td><td>Dice qué dibujó el niño, con su confianza, y sus rasgos (colores, partes)</td></tr>
+    <tr><td>Escribir</td><td>Gemma 4</td><td>Cuento de 3 páginas para la edad, con el nombre y los rasgos reales del dibujo</td></tr>
+    <tr><td>Moderar</td><td>Llama Guard 3 + revisión infantil con Gemma 4</td><td>Dos filtros que deben aprobar</td></tr>
+    <tr><td>Ilustrar</td><td>FLUX.1 schnell</td><td>Fondos en lápices de colores, con el hábitat del personaje y colores que contrastan con el dibujo</td></tr>
+    <tr><td>Narrar</td><td>Aura-2 (voz en español)</td><td>Lee cada página en voz alta</td></tr>
   </table></div>
-  <ul>
-    <li><b>Robustez:</b> reintento por paso (2), regeneración si la moderación rechaza (2), 45 s por llamada y 180 s por cuento. Si la visión cae, el niño escribe qué dibujó; si la imagen cae, se usa un fondo dibujado con Pillow y el cuento sale con aviso.</li>
-    <li><b>Rotación de cuentas de Cloudflare:</b> cada cuenta tiene 10.000 neuronas gratis al día. Ante un 429 por cupo, el backend marca la cuenta agotada hasta las 00:00 UTC (la vuelve a probar cada 30 min) y repite la misma petición con la siguiente; ante un 429 de ritmo la aparta 60 s. Hasta 5 cuentas.</li>
-    <li><b>Costo:</b> cada llamada registra neuronas y su equivalente en USD (0,011 USD por 1.000 neuronas) para el panel de operación. Un cuento sin voz gastó unas 230 neuronas en producción (2026-11-04); la voz Aura-2 suma unas 2.150.</li>
-    <li><b>Ollama local:</b> con <code>gemma3:4b</code> el mismo backend corre sin internet ni costo (visión, texto y moderación de desarrollo); la imagen queda en «omitido» y el cuento sale con su aviso.</li>
-    <li><b>Prompts del producto:</b> texto completo en <a href="prompts.html#producto">la página de prompts</a>.</li>
-  </ul>
+  <p>Todos corren en Cloudflare Workers AI (plan gratuito). Las respuestas se piden en JSON con esquema estricto, y la imagen final la compone el backend: recorta el dibujo del niño y lo coloca sobre el fondo. Para trabajar sin internet, el mismo backend usa Ollama con un modelo local. Los textos exactos de los prompts están en <a href="prompts.html#producto">la página de prompts</a>.</p>
 </section>
 
 <section id="funcionamiento">
-  <h2><span class="n">6</span>Funcionamiento de la aplicación</h2>
-  <p>Comprobado hoy (2026-11-23) instalando <b>este mismo APK</b> (el archivo del botón de descarga tiene el mismo SHA-256), en un emulador Android 15 (API 35, x86_64) contra el backend de producción:</p>
+  <h2><span class="n">6</span>Funcionamiento</h2>
+  <p>Probado el 2026-11-23 con <b>este mismo APK</b> en un emulador Android 15, contra el servidor de producción:</p>
   <div class="tabla"><table>
     <tr><th>Función</th><th>Resultado</th></tr>
-    <tr><td>Instalar y abrir</td><td class="ok">Funciona</td></tr>
-    <tr><td>Crear cuenta (sin confirmar correo) y entrar</td><td class="ok">Funciona</td></tr>
-    <tr><td>Crear perfil (apodo y edad)</td><td class="ok">Funciona</td></tr>
-    <tr><td>Dibujar en el lienzo (colores y grosores)</td><td class="ok">Funciona</td></tr>
-    <tr><td>Identificación asistida</td><td class="ok">«un pez» 90 %, «un delfín» 40 %, «un submarino» 20 %</td></tr>
-    <tr><td>Momento mágico y cuento con 3 láminas</td><td class="ok">«El Pez Saltarín», listo; el dibujo aparece dentro de cada lámina</td></tr>
-    <tr><td>Voz (altavoz sobre la lámina)</td><td class="ok">Descarga el MP3 y lo decodifica (el emulador corría sin salida de audio)</td></tr>
-    <tr><td>Biblioteca del perfil</td><td class="ok">Muestra el cuento con su portada</td></tr>
-    <tr><td>Cerrar sesión y volver a entrar</td><td class="ok">Funciona; el perfil sigue ahí</td></tr>
+    <tr><td>Instalar, crear cuenta y entrar</td><td class="ok">Funciona</td></tr>
+    <tr><td>Crear perfil y dibujar</td><td class="ok">Funciona</td></tr>
+    <tr><td>Reconocer el dibujo</td><td class="ok">«un pez» 90 %</td></tr>
+    <tr><td>Cuento con 3 ilustraciones</td><td class="ok">«El Pez Saltarín», con el dibujo en cada página</td></tr>
+    <tr><td>Voz</td><td class="ok">El audio de la página se descarga y se reproduce</td></tr>
+    <tr><td>Biblioteca, salir y volver a entrar</td><td class="ok">Funciona</td></tr>
   </table></div>
-  <p>Estado del backend medido hoy (<code>GET /salud</code>): base de datos <code>ok</code>; visión, texto e imagen en <code>cloudflare</code>; moderación <code>cloudflare-llamaguard</code>; voz <code>cloudflare</code>; correo <code>ninguno</code>.</p>
-  <div class="aviso">El backend de producción corre una versión anterior a <code>main</code> (el despliegue en Render es manual). La app no cambió entre esa versión y <code>main</code>, y el flujo completo funcionó; lo nuevo de <code>main</code> que aún no está en producción es del backend (rotación de cuentas de Cloudflare y ajustes de voz y fondos).</div>
 </section>
 
 <section id="flujo">
-  <h2><span class="n">7</span>Flujo principal paso a paso</h2>
+  <h2><span class="n">7</span>Flujo principal</h2>
   <ol class="pasos">
-    <li><b>Acceso.</b> El adulto crea la cuenta (correo, contraseña de 10+ caracteres y consentimiento) y entra.</li>
-    <li><b>Perfil.</b> Elige «¿Quién va a dibujar?» o crea un perfil con apodo y edad.</li>
-    <li><b>Dibujo.</b> El niño dibuja con el dedo y toca listo.</li>
-    <li><b>Identificación.</b> La IA propone qué es (barra de confianza) y el niño elige o escribe; opcionalmente le pone nombre.</li>
-    <li><b>Momento mágico.</b> Animación de espera mientras el backend identifica, escribe, modera, ilustra y narra (≈40 s medido hoy).</li>
-    <li><b>Cuento.</b> Tres láminas con el dibujo dentro, texto grande y botón de voz. El cuento queda en la biblioteca del perfil.</li>
+    <li><b>Acceso:</b> el adulto crea la cuenta y acepta el consentimiento.</li>
+    <li><b>Perfil:</b> elige quién va a dibujar o crea un perfil.</li>
+    <li><b>Dibujo:</b> el niño dibuja con el dedo.</li>
+    <li><b>Reconocimiento:</b> la IA propone qué es y el niño confirma.</li>
+    <li><b>Espera:</b> animación mientras se crea el cuento.</li>
+    <li><b>Cuento:</b> tres páginas ilustradas con voz; queda en la biblioteca.</li>
   </ol>
   <div class="capturas">
-    <figure><img src="img/app-01-acceso.jpg" alt="Acceso del adulto" loading="lazy"><figcaption>Acceso del adulto</figcaption></figure>
-    <figure><img src="img/app-04-crear-perfil.jpg" alt="Nuevo perfil" loading="lazy"><figcaption>Nuevo perfil</figcaption></figure>
-    <figure><img src="img/app-05-perfiles.jpg" alt="¿Quién va a dibujar?" loading="lazy"><figcaption>¿Quién va a dibujar?</figcaption></figure>
-    <figure><img src="img/app-06-lienzo.jpg" alt="Lienzo con el dibujo" loading="lazy"><figcaption>Lienzo con el dibujo</figcaption></figure>
-    <figure><img src="img/app-07-identificacion.jpg" alt="Identificación con confianza" loading="lazy"><figcaption>Identificación con confianza</figcaption></figure>
-    <figure><img src="img/app-08-momento-magico.jpg" alt="Momento mágico" loading="lazy"><figcaption>Momento mágico</figcaption></figure>
-    <figure><img src="img/app-09-cuento.jpg" alt="Página 1 con voz" loading="lazy"><figcaption>Página 1 con voz</figcaption></figure>
+    <figure><img src="img/app-01-acceso.jpg" alt="Acceso" loading="lazy"><figcaption>1 · Acceso</figcaption></figure>
+    <figure><img src="img/app-05-perfiles.jpg" alt="Perfiles" loading="lazy"><figcaption>2 · Perfiles</figcaption></figure>
+    <figure><img src="img/app-06-lienzo.jpg" alt="Lienzo con el dibujo" loading="lazy"><figcaption>3 · Dibujo</figcaption></figure>
+    <figure><img src="img/app-07-identificacion.jpg" alt="Reconocimiento con confianza" loading="lazy"><figcaption>4 · Reconocimiento</figcaption></figure>
+    <figure><img src="img/app-08-momento-magico.jpg" alt="Animación de espera" loading="lazy"><figcaption>5 · Espera</figcaption></figure>
+    <figure><img src="img/app-09-cuento.jpg" alt="Página 1 del cuento con voz" loading="lazy"><figcaption>6 · Cuento</figcaption></figure>
     <figure><img src="img/app-12-pagina-3.jpg" alt="Página 3" loading="lazy"><figcaption>Página 3</figcaption></figure>
     <figure><img src="img/app-14-biblioteca.jpg" alt="Biblioteca" loading="lazy"><figcaption>Biblioteca</figcaption></figure>
   </div>
-  <p class="fuente">Capturas reales del APK 0.2.0 en el emulador, contra producción, el 2026-11-23.</p>
-  <h3>Ejemplo real generado hoy en producción</h3>
+  <h3>Otro ejemplo real</h3>
   <div class="galeria">
-    <figure><img src="img/dibujo.jpg" alt="Dibujo de entrada: un pez naranja" loading="lazy"><figcaption>Dibujo de entrada</figcaption></figure>
-    <figure><img src="img/lamina-1.jpg" alt="Lámina 1" loading="lazy"><figcaption>Página 1</figcaption></figure>
-    <figure><img src="img/lamina-2.jpg" alt="Lámina 2" loading="lazy"><figcaption>Página 2</figcaption></figure>
-    <figure><img src="img/lamina-3.jpg" alt="Lámina 3" loading="lazy"><figcaption>Página 3</figcaption></figure>
+    <figure><img src="img/dibujo.jpg" alt="Dibujo de entrada: un pez naranja" loading="lazy"><figcaption>Dibujo</figcaption></figure>
+    <figure><img src="img/lamina-1.jpg" alt="Página 1" loading="lazy"><figcaption>Página 1</figcaption></figure>
+    <figure><img src="img/lamina-2.jpg" alt="Página 2" loading="lazy"><figcaption>Página 2</figcaption></figure>
+    <figure><img src="img/lamina-3.jpg" alt="Página 3" loading="lazy"><figcaption>Página 3</figcaption></figure>
   </div>
-  <p><b>«Las aventuras de Burbuja»</b> (página 1): «Había una vez un pez llamado Burbuja. Burbuja era de color naranja y tenía una gran sonrisa. Vivía muy feliz en el fondo del mar. A Burbuja le encantaba nadar entre las plantas y saludar a sus amigos con su cola triangular. ¡El océano era su lugar favorito para jugar!»</p>
-  <p class="fuente">Salida real de <code>https://storydraw.onrender.com</code> el 2026-11-23: identificación «un pez» (0,95), personaje y nombre «Burbuja», listo en 38,9 s.</p>
+  <p>«Había una vez un pez llamado Burbuja. Burbuja era de color naranja y tenía una gran sonrisa. Vivía muy feliz en el fondo del mar…» — <i>Las aventuras de Burbuja</i>.</p>
 </section>
 
-<section id="comunicacion">
+<section id="documentos">
   <h2><span class="n">8</span>Documentos técnicos</h2>
   <ul>
-    <li><a href="https://github.com/Josuehmz/storydraw/blob/main/README.md">README</a>: arquitectura, cómo correr backend y app, variables de entorno.</li>
-    <li><a href="https://github.com/Josuehmz/storydraw/blob/main/CONTEXTO-IA.md">CONTEXTO-IA.md</a>: el proyecto explicado para que una IA lo cuente a quien lo continúe.</li>
-    <li><a href="https://github.com/Josuehmz/storydraw/blob/main/render.yaml">render.yaml</a>: despliegue declarativo, secretos sin valor.</li>
-    <li><a href="https://github.com/Josuehmz/storydraw/tree/main/backend/tests">Pruebas del backend</a> · <a href="https://github.com/Josuehmz/storydraw/tree/main/app/test">pruebas de la app</a>.</li>
-    <li><a href="prompts.html">Prompts de construcción y del producto (criterio SWNT)</a>.</li>
+    <li><a href="https://github.com/Josuehmz/storydraw#readme">README del repositorio</a>: arquitectura, cómo correrlo y pruebas.</li>
+    <li><a href="https://github.com/Josuehmz/storydraw/blob/main/CONTEXTO-IA.md">Contexto del proyecto</a>: decisiones, estado y glosario.</li>
+    <li><a href="prompts.html">Prompts de construcción y del producto</a> (criterio SWNT).</li>
   </ul>
-  <h3>Pila</h3>
-  <p>Flutter 3.44 · Riverpod 3 · Dio · Hive · perfect_freehand · just_audio — Python 3.12 · FastAPI 0.115 · Pydantic 2 · SQLAlchemy 2 async · Alembic · Pillow · PyJWT · Argon2id · slowapi — PostgreSQL (Neon) · Render · Cloudflare Workers AI · GitHub Pages.</p>
+  <p><b>Tecnologías:</b> Flutter · Riverpod · Python · FastAPI · SQLAlchemy · PostgreSQL · Pillow · Cloudflare Workers AI · Render · Neon · GitHub Pages.</p>
 </section>
 
 </main>
-<footer>StoryDraw · documentación generada el 2026-11-23 desde el código de <code>main</code> (<code>b4d9946</code>) y mediciones de ese día.</footer>
+<footer>StoryDraw · versión 0.2.0 (commit <code>b4d9946</code>) · 2026-11-23</footer>
 </body>
 </html>
