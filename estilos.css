@@ -18,7 +18,7 @@ section{background:#fff;border:1px solid var(--borde);border-radius:14px;padding
 section h2{color:var(--violeta);font-size:1.35rem;margin:14px 0 6px}
 section h2 .n{display:inline-block;min-width:1.7em;height:1.7em;line-height:1.7em;text-align:center;border-radius:50%;background:var(--violeta);color:#fff;font-size:.9rem;margin-right:6px;vertical-align:2px}
 h3{font-size:1.07rem;margin:16px 0 4px}
-code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:.86em;background:var(--violeta2);padding:1px 5px;border-radius:5px;word-break:break-all}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:.86em;background:var(--violeta2);padding:1px 5px;border-radius:5px;overflow-wrap:anywhere}
 .tabla{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
 th,td{border:1px solid var(--borde);padding:6px 8px;text-align:left;vertical-align:top}
@@ -35,7 +35,7 @@ th{background:var(--violeta2)}
 .galeria figcaption{font-size:.82rem;color:var(--gris)}
 .capturas{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
 .capturas img{width:100%;border-radius:14px;border:1px solid var(--borde)}
-svg.diagrama{width:100%;height:auto;background:#fff}
+.diagrama-caja{overflow-x:auto;-webkit-overflow-scrolling:touch}svg.diagrama{width:100%;min-width:760px;height:auto;background:#fff}
 pre{white-space:pre-wrap;word-wrap:break-word;background:#f6f4fc;border:1px solid var(--borde);border-radius:10px;padding:12px;font:13.5px/1.45 ui-monospace,Consolas,monospace;overflow-x:auto}
 details{border:1px solid var(--borde);border-radius:10px;padding:8px 12px;margin:10px 0;background:#fff}
 details summary{cursor:pointer;font-weight:700;color:var(--violeta)}
