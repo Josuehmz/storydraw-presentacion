@@ -41,3 +41,4 @@ details{border:1px solid var(--borde);border-radius:10px;padding:8px 12px;margin
 details summary{cursor:pointer;font-weight:700;color:var(--violeta)}
 footer{text-align:center;color:var(--gris);font-size:.85rem;padding:20px}
 a{color:var(--violeta)}
+.capturas figure{margin:0}.capturas figcaption{font-size:.82rem;color:var(--gris);text-align:center}

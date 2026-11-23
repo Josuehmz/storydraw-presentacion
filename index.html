@@ -13,8 +13,8 @@
   <img src="img/icono.png" alt="Logo de StoryDraw">
   <h1>StoryDraw</h1>
   <p>Un niño de 6 a 12 años dibuja a su personaje y, en menos de un minuto, recibe un cuento de tres páginas con su propio dibujo dentro de cada lámina.</p>
-  <a class="descarga" href="https://github.com/Josuehmz/storydraw/releases/download/v0.2.0-presentacion/storydraw-0.2.0-b4d9946.apk">⬇ Descargar APK
-    <small>Android 8.0 o superior · versión 0.2.0 · 53,6 MiB</small></a>
+  <a class="descarga" href="https://github.com/Josuehmz/storydraw/releases/download/v0.2.0-presentacion/storydraw-0.2.0-b4d9946-debug.apk">⬇ Descargar APK
+    <small>Android 8.0 o superior · versión 0.2.0 · 150,5 MiB</small></a>
   <div class="enlaces">
     <a href="https://josuehmz.github.io/storydraw/">Abrir la web</a>
     <a href="https://github.com/Josuehmz/storydraw">Código fuente</a>
@@ -33,9 +33,9 @@
   </ol>
   <div class="tabla"><table>
     <tr><th>Versión</th><td>0.2.0 (código 2), compilada desde <code>main</code> en el commit <code>b4d9946</code></td></tr>
-    <tr><th>Tipo</th><td>Release firmado con la clave de depuración: instala sin tienda; no es la firma de publicación</td></tr>
-    <tr><th>Tamaño</th><td>56.216.499 bytes (53,6 MiB) · arm64-v8a, armeabi-v7a y x86_64</td></tr>
-    <tr><th>SHA-256</th><td><code>f665d1ba084ef61f2ad276657116767491707a0d216f9683e221409eb1191276</code></td></tr>
+    <tr><th>Tipo</th><td>APK de depuración: instala sin tienda; no es la versión de publicación. El build de release minificado con R8 no arranca (falla <code>shared_preferences_android</code>); queda pendiente</td></tr>
+    <tr><th>Tamaño</th><td>157.849.389 bytes (150,5 MiB): el modo depuración incluye varias arquitecturas y el motor sin optimizar</td></tr>
+    <tr><th>SHA-256</th><td><code>422f01a57532e0b4a3ba663f21da262814123d3d26565ea23b58de324f023625</code></td></tr>
     <tr><th>Backend</th><td><code>https://storydraw.onrender.com</code> (producción)</td></tr>
     <tr><th>Release</th><td><a href="https://github.com/Josuehmz/storydraw/releases/tag/v0.2.0-presentacion">v0.2.0-presentacion en GitHub</a></td></tr>
   </table></div>
@@ -199,7 +199,21 @@
 
 <section id="funcionamiento">
   <h2><span class="n">6</span>Funcionamiento de la aplicación</h2>
-  <!--FUNCIONAMIENTO-->
+  <p>Comprobado hoy (2026-11-23) instalando <b>este mismo APK, descargado de la release</b> (SHA-256 verificado), en un emulador Android 15 (API 35, x86_64) contra el backend de producción:</p>
+  <div class="tabla"><table>
+    <tr><th>Función</th><th>Resultado</th></tr>
+    <tr><td>Instalar y abrir</td><td class="ok">Funciona</td></tr>
+    <tr><td>Crear cuenta (sin confirmar correo) y entrar</td><td class="ok">Funciona</td></tr>
+    <tr><td>Crear perfil (apodo y edad)</td><td class="ok">Funciona</td></tr>
+    <tr><td>Dibujar en el lienzo (colores y grosores)</td><td class="ok">Funciona</td></tr>
+    <tr><td>Identificación asistida</td><td class="ok">«un pez» 90 %, «un delfín» 40 %, «un submarino» 20 %</td></tr>
+    <tr><td>Momento mágico y cuento con 3 láminas</td><td class="ok">«El Pez Saltarín», listo; el dibujo aparece dentro de cada lámina</td></tr>
+    <tr><td>Voz (altavoz sobre la lámina)</td><td class="ok">Descarga el MP3 y lo decodifica (el emulador corría sin salida de audio)</td></tr>
+    <tr><td>Biblioteca del perfil</td><td class="ok">Muestra el cuento con su portada</td></tr>
+    <tr><td>Cerrar sesión y volver a entrar</td><td class="ok">Funciona; el perfil sigue ahí</td></tr>
+  </table></div>
+  <p>Estado del backend medido hoy (<code>GET /salud</code>): base de datos <code>ok</code>; visión, texto e imagen en <code>cloudflare</code>; moderación <code>cloudflare-llamaguard</code>; voz <code>cloudflare</code>; correo <code>ninguno</code>.</p>
+  <div class="aviso">El backend de producción corre una versión anterior a <code>main</code> (el despliegue en Render es manual). La app no cambió entre esa versión y <code>main</code>, y el flujo completo funcionó; lo nuevo de <code>main</code> que aún no está en producción es del backend (rotación de cuentas de Cloudflare y ajustes de voz y fondos).</div>
 </section>
 
 <section id="flujo">
@@ -212,7 +226,18 @@
     <li><b>Momento mágico.</b> Animación de espera mientras el backend identifica, escribe, modera, ilustra y narra (≈40 s medido hoy).</li>
     <li><b>Cuento.</b> Tres láminas con el dibujo dentro, texto grande y botón de voz. El cuento queda en la biblioteca del perfil.</li>
   </ol>
-  <!--CAPTURAS-->
+  <div class="capturas">
+    <figure><img src="img/app-01-acceso.jpg" alt="Acceso del adulto" loading="lazy"><figcaption>Acceso del adulto</figcaption></figure>
+    <figure><img src="img/app-04-crear-perfil.jpg" alt="Nuevo perfil" loading="lazy"><figcaption>Nuevo perfil</figcaption></figure>
+    <figure><img src="img/app-05-perfiles.jpg" alt="¿Quién va a dibujar?" loading="lazy"><figcaption>¿Quién va a dibujar?</figcaption></figure>
+    <figure><img src="img/app-06-lienzo.jpg" alt="Lienzo con el dibujo" loading="lazy"><figcaption>Lienzo con el dibujo</figcaption></figure>
+    <figure><img src="img/app-07-identificacion.jpg" alt="Identificación con confianza" loading="lazy"><figcaption>Identificación con confianza</figcaption></figure>
+    <figure><img src="img/app-08-momento-magico.jpg" alt="Momento mágico" loading="lazy"><figcaption>Momento mágico</figcaption></figure>
+    <figure><img src="img/app-09-cuento.jpg" alt="Página 1 con voz" loading="lazy"><figcaption>Página 1 con voz</figcaption></figure>
+    <figure><img src="img/app-12-pagina-3.jpg" alt="Página 3" loading="lazy"><figcaption>Página 3</figcaption></figure>
+    <figure><img src="img/app-14-biblioteca.jpg" alt="Biblioteca" loading="lazy"><figcaption>Biblioteca</figcaption></figure>
+  </div>
+  <p class="fuente">Capturas reales del APK 0.2.0 en el emulador, contra producción, el 2026-11-23.</p>
   <h3>Ejemplo real generado hoy en producción</h3>
   <div class="galeria">
     <figure><img src="img/dibujo.jpg" alt="Dibujo de entrada: un pez naranja" loading="lazy"><figcaption>Dibujo de entrada</figcaption></figure>
