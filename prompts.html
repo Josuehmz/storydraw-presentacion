@@ -28,7 +28,7 @@ El código de `personal/Draw/` es de un laboratorio antiguo: NO se usa, NO se co
 - Contexto adicional: `&lt;ruta&gt;` (requisitos RF/RNF, si los hay)
 
 # Decisiones del autor (no se discuten)
-1. **Groq ya NO se usa.** **OpenAI para todo**: visión, texto (cuento), moderación e imagen (GPT Image 1 Mini, 1024x1024, calidad baja), con una sola clave `OPENAI_API_KEY`. La voz sigue con ElevenLabs Flash/Turbo v2.5. El correo, por SMTP transaccional. Cada capacidad va detrás de su adaptador (IVision, ITexto, IImagen, IVoz, ICorreo): cambiar de proveedor = una clase + una variable de entorno. Los modelos se configuran por variable de entorno; antes de fijar los valores por defecto, verifica en la documentación oficial de OpenAI que los modelos existen hoy.
+1. **Groq ya NO se usa.** **OpenAI para todo**: visión, texto (cuento), moderación e imagen (GPT Image 1 Mini, 1024x1024, calidad baja), con una sola clave de OpenAI. La voz sigue con ElevenLabs Flash/Turbo v2.5. El correo, por SMTP transaccional. Cada capacidad va detrás de su adaptador (IVision, ITexto, IImagen, IVoz, ICorreo): cambiar de proveedor = una clase + una variable de entorno. Los modelos se configuran por variable de entorno; antes de fijar los valores por defecto, verifica en la documentación oficial de OpenAI que los modelos existen hoy.
 2. Alcance de esta tanda: TODO el backend del diagrama (cuentas con JWT/PyJWT + Argon2id + consentimiento previo del tutor + verificación por correo; perfiles por niño; biblioteca con borrado a petición; moderación obligatoria que no se puede desactivar; orquestador asyncio de 5 pasos con reintento por paso y degradación; composición con Pillow 11 + rembg; panel de operación con latencia y costo por cuento; límite de tasa con slowapi; PostgreSQL 16 con SQLAlchemy 2 y migraciones con Alembic; S3 compatible; Dockerfile + docker-compose con Postgres y MinIO) MÁS el flujo del niño en la app Flutter (lienzo perfect_freehand, identificación asistida, momento mágico/pantalla de espera, cuento con visor + narración con just_audio, biblioteca con caché Hive, sesión en SharedPreferences, Riverpod, Dio con reintentos, URL del backend inyectable con --dart-define, timeout de 90 s). Edad: 6 a 12 años. UX sin lectura para niños (ver la trampa de las notas).
 3. Frontera de los datos del menor: el dibujo viaja en memoria y nunca se persiste; se guarda solo el cuento resultante. Ningún dato del niño se escribe antes del consentimiento. La moderación corre antes de que el niño vea nada.
 4. Ubicación: carpeta nueva **`&lt;ruta&gt;`**. OJO: NO uses `personal/storydraw`, porque Windows no distingue mayúsculas y chocaría con las notas `personal/StoryDraw`. Estructura: `backend/` y `app/` (Flutter).
@@ -62,13 +62,13 @@ El PC es un Ryzen 7 3700U con 14 GB de RAM y sin GPU NVIDIA: Ollama va por CPU, 
 
 # Qué hacer
 1. Rama nueva `feature/proveedores-gratuitos` creada DESDE `feature/implementacion-inicial` (no desde qa).
-2. Adaptadores nuevos detrás de los puertos que ya existen, seleccionables con las variables PROVEEDOR_* que ya hay:
+2. Adaptadores nuevos detrás de los puertos que ya existen, seleccionables con las variables ajustes de modelo que ya hay:
    - **Cloudflare Workers AI** (REST `https://api.cloudflare.com/client/v4/accounts/{&lt;id de cuenta&gt;}/ai/run/{modelo}`, con Bearer `&lt;token&gt;`): visión, texto, imagen (FLUX.1-schnell u otro vigente) y voz (MeloTTS u otro vigente con español). Antes de fijar los modelos por defecto, verifica en developers.cloudflare.com/workers-ai/models que existen hoy y qué formato de entrada y salida usan (la imagen de flux-schnell vuelve en base64; revisa el de la voz). Los modelos se configuran por variable de entorno.
-   - **Ollama** (API nativa /api/chat u /api/generate con `format: json`, OLLAMA_URL y modelos por variable): texto y visión. Imagen y voz NO existen en Ollama: en la prueba local esos pasos usan la degradación que ya tiene el orquestador (placeholder o cuento sin audio), sin romper nada.
+   - **Ollama** (API nativa /api/chat u /api/generate con `format: json`, una opción de configuración y modelos por variable): texto y visión. Imagen y voz NO existen en Ollama: en la prueba local esos pasos usan la degradación que ya tiene el orquestador (placeholder o cuento sin audio), sin romper nada.
    - **Moderación**: la de OpenAI es gratuita, pero exige una clave. Para que la prueba local funcione sin claves, agrega un adaptador de moderación con LLM (Ollama/Cloudflare) que clasifique el texto del cuento y devuelva aprobado o rechazado. Debe estar claramente marcado como solo para desarrollo y fallar cerrado (si no responde, el cuento no se muestra, como ya es la regla). La moderación sigue siendo obligatoria.
    - Mantén los adaptadores de OpenAI y ElevenLabs: no se borran.
 [línea omitida en la versión pública: límites o configuración del proveedor de IA]
-3. `.env.example` (solo nombres, valores vacíos o defaults no secretos): &lt;id de cuenta&gt;, &lt;token&gt;, CLOUDFLARE_MODELO_*, OLLAMA_URL, OLLAMA_MODELO_*, OLLAMA_TIMEOUT_S, y los PROVEEDOR_* con sus valores posibles documentados en comentarios.
+3. `.env.example` (solo nombres, valores vacíos o defaults no secretos): &lt;id de cuenta&gt;, &lt;token&gt;, ajustes de modelo, una opción de configuración, ajustes de modelo, una opción de configuración, y los ajustes de modelo con sus valores posibles documentados en comentarios.
 4. Un perfil de prueba local en docker compose (por ejemplo, el override `docker-compose.ollama.yml` o un perfil `local`) donde la API alcance al Ollama del host en `http://host.docker.internal:11434` (en Windows funciona con Docker Desktop; agrega `extra_hosts: host.docker.internal:host-gateway` por si acaso).
 5. Tests con HTTP simulado para cada adaptador nuevo (la forma del pedido y el parseo de la respuesta, incluidos errores y timeouts) y para la moderación con LLM fallando cerrada. Los 47 tests que hay tienen que seguir pasando. Ruff limpio.
 6. Actualiza el único README.md de la raíz: proveedores disponibles, cómo correr la prueba local con Ollama y cómo pasar a Cloudflare. No crees otros .md.
@@ -106,11 +106,11 @@ VoiceStudio corre en el host en `http://localhost:3900` (desde Docker: `http://h
 
 # Qué hacer
 Rama nueva `feature/voz-local-y-ajustes` creada DESDE `feature/proveedores-gratuitos`.
-1. Adaptador `IVoz` nuevo: `PROVEEDOR_VOZ=voicestudio`, con `VOICESTUDIO_URL`, `VOICESTUDIO_MODELO` (moss-tts-nano), `VOICESTUDIO_VOZ` (cd1c5122) y `VOICESTUDIO_TIMEOUT_S`. Costo 0. La configuración lo rechaza con `ENTORNO=produccion`, como a los otros de desarrollo. Tests con HTTP simulado: forma del pedido (UTF-8, con acentos), audio de vuelta, error y timeout.
-2. Override de Ollama (`docker-compose.ollama.yml`): por defecto `gemma3:4b` en texto, visión y moderación, y `PROVEEDOR_VOZ=voicestudio`, con `VOICESTUDIO_URL=http://host.docker.internal:3900`. La imagen sigue en `ninguno`.
+1. Adaptador `IVoz` nuevo: `voicestudio`, con varias opciones de configuración (moss-tts-nano), una opción de configuración (cd1c5122) y una opción de configuración. Costo 0. La configuración lo rechaza con `ENTORNO=produccion`, como a los otros de desarrollo. Tests con HTTP simulado: forma del pedido (UTF-8, con acentos), audio de vuelta, error y timeout.
+2. Override de Ollama (`docker-compose.ollama.yml`): por defecto `gemma3:4b` en texto, visión y moderación, y `voicestudio`, con `http://host.docker.internal:3900`. La imagen sigue en `ninguno`.
 3. Arreglos que salieron de la prueba del asistente:
    a. El paso del cuento recibía solo la etiqueta del personaje («Dinosaurio») y el modelo inventó «pelaje marrón y ojos verdes» con un dibujo verde. Pásale también los atributos que detecta la visión (color, elementos, emoción), que no son datos personales del niño. Test que lo cubra.
-   b. Con `PROVEEDOR_IMAGEN=ninguno` o `PROVEEDOR_VOZ=ninguno`, el orquestador igual reintentaba ese paso. Que no reintente lo que está apagado.
+   b. Con `ninguno` o `ninguno`, el orquestador igual reintentaba ese paso. Que no reintente lo que está apagado.
    c. Asegura que con Ollama se pida el esquema JSON (`format` con esquema que exija exactamente 3 páginas) y que el dominio valide 3 páginas: si llegan menos, regenera (cuenta como reintento) en lugar de entregar un cuento incompleto. Test.
 4. README único de la raíz: proveedor `voicestudio` (solo desarrollo, cómo crear el perfil de voz en VoiceStudio, tiempos medidos), gemma3:4b por defecto en Ollama. Corrige que decía `qwen2.5vl:3b`.
 5. pytest y ruff en verde (eran 87 tests). La app Flutter no cambia, salvo que algo lo exija; si cambia, `flutter analyze` y `flutter test`.
@@ -206,7 +206,7 @@ código, **nunca los imprimas** ni los pongas en un log, commit o nota.
    copia del prompt; si la tiene, que use `prompt_fondo`).
 3. Problema visto en la prueba: Flux añadió una figurita humana en la escena «a small water puddle in
    a garden» aunque el prompt lo prohíbe (schnell no tiene prompt negativo). Ajusta la regla 5 de
-   `PROMPT_CUENTO` para que la «escena» describa solo paisaje y objetos, evitando lugares que
+   plantilla del cuento para que la «escena» describa solo paisaje y objetos, evitando lugares que
    sugieren gente (casas, jardines con cercas, calles, parques infantiles) y mantenga el estilo
    coherente entre páginas. No cambies el resto del prompt.
 4. Pruebas que fijen el estilo nuevo (el texto contiene «colored pencil» y «not photorealistic»).
@@ -309,8 +309,8 @@ generada por el asistente para la prueba local) y `app/assets/marca/logo-origina
 Diseño esperado:
 - Botón «Entrar como invitado» en la pantalla de inicio.
 - Como es solo para pruebas locales, va detrás de un interruptor de compilación de la app, por
-  ejemplo `--dart-define=MODO_INVITADO=true` (apagado por defecto), **y** de uno del backend,
-  por ejemplo `PERMITIR_INVITADOS=true` (apagado por defecto y **prohibido en `ENTORNO=produccion`**,
+  ejemplo `--dart-define=true` (apagado por defecto), **y** de uno del backend,
+  por ejemplo `true` (apagado por defecto y **prohibido en `ENTORNO=produccion`**,
   validado en `config.py` como los adaptadores falsos). Así no puede llegar a producción por error.
 - El backend necesita una forma de dejar generar cuentos sin cuenta: p. ej. `POST /v1/invitado`
   que da un token de sesión corto sin tutor ni consentimiento, o rutas de invitado. Elige lo más
@@ -324,7 +324,7 @@ Diseño esperado:
 
 ## Pruebas
 
-- Backend: pytest (con invitado activado y desactivado; producción rechaza `PERMITIR_INVITADOS`;
+- Backend: pytest (con invitado activado y desactivado; producción rechaza una opción de configuración;
   el cuento del invitado no queda en la BD) y ruff, en verde, con `env -u PYTHONPATH -u PYTHONHOME`.
 - App: `flutter analyze` y `flutter test` (widget del botón invitado visible solo con el flag;
   repositorio local de cuentos del invitado).
@@ -376,7 +376,7 @@ antes. En el árbol hay `app/web/` sin seguimiento: no es tuyo, no lo subas.
 4. Pruebas de widget: estado vacío visible con cero perfiles; el botón abre el formulario; con
    perfiles no aparece el estado vacío.
 5. Verificación: `flutter analyze` y `flutter test` en verde. Compila la versión web **en tu scratch**
-   (no en `app/build/`) con `--dart-define=MODO_INVITADO=true` y saca capturas de: perfiles vacío,
+   (no en `app/build/`) con `--dart-define=true` y saca capturas de: perfiles vacío,
    formulario, perfiles con uno creado, lienzo vacío. Guárdalas en
    `&lt;ruta&gt;` y míralas
    con visión. No toques los servidores del asistente en `:8000` y `:5000`.
@@ -502,8 +502,8 @@ otro puerto y otra BD.
      aparte como `el autor` con el noreply de GitHub. Sin `Co-Authored-By` ni mención de IA.
 3. Pruebas: pytest + ruff (`env -u PYTHONPATH -u PYTHONHOME`), `flutter analyze` y `flutter test` en
    verde (adapta las pruebas de widgets que cambien por el rediseño; no borres pruebas de lo tuyo).
-4. Prueba visual: compila web **en tu scratch** con `--dart-define=MODO_INVITADO=true` y
-   `API_URL` a tu puerto, y saca capturas de: acceso, perfiles vacío, formulario de perfil, perfiles
+4. Prueba visual: compila web **en tu scratch** con `--dart-define=true` y
+   una opción de configuración a tu puerto, y saca capturas de: acceso, perfiles vacío, formulario de perfil, perfiles
    con uno, lienzo vacío, identificación/nombre, momento mágico, cuento, biblioteca. Un cuento real
    con Cloudflare como invitado (máximo 2). Guarda las capturas en
    `&lt;ruta&gt;` y míralas con
@@ -546,35 +546,35 @@ ARQUITECTURA ELEGIDA:
   - El Space necesita su README con YAML `sdk: docker` y `app_port: 8000`. El `backend/Dockerfile` ya usa `PORT`.
   - El Space se duerme a las 48 h sin uso.
 - **Base de datos:** Neon, Postgres gratis.
-  - Revisa el formato de `DATABASE_URL` con asyncpg (`postgresql+asyncpg://…?ssl=require`) y que alembic corra al arrancar.
+  - Revisa el formato de una opción de configuración con asyncpg (`postgresql+asyncpg://…?ssl=require`) y que alembic corra al arrancar.
 - **Imágenes:** un Storage Bucket **privado** de Hugging Face por su API S3 (docs: https://huggingface.co/docs/hub/storage-buckets-s3):
-  - `S3_ENDPOINT_URL=https://s3.hf.co/&lt;namespace&gt;`, `S3_REGION=us-east-1` y `S3_BUCKET=&lt;nombre&gt;`.
+  - `https://s3.hf.co/&lt;namespace&gt;`, `us-east-1` y `&lt;nombre&gt;`.
   - Requiere `addressing_style=path` y `request_checksum_calculation` / `response_checksum_validation = when_required` en la config de botocore.
-  - **No admite cifrado SSE:** `S3_CIFRADO_SSE=false`.
+  - **No admite cifrado SSE:** `false`.
   - Ajusta el adaptador S3 para que esas opciones salgan de la configuración, con pruebas, sin romper MinIO local.
   - Comprueba que las imágenes se sirvan por el backend o con URL firmada. Nada debe ser público: son dibujos de niños.
 - **Web Flutter:** GitHub Pages con GitHub Actions. Es gratis, trae HTTPS y no necesita tokens.
-  - El workflow compila `flutter build web` con `--base-href /storydraw/` y `--dart-define=API_URL=${{ vars.API_URL }}`, y publica en Pages al hacer push a `main`.
-  - `CORS_ORIGENES` debe incluir `https://&lt;usuario&gt;.github.io`.
-- **Correo:** Brevo por SMTP (300 al día gratis), con `PROVEEDOR_CORREO` y `SMTP_*`.
-- **IA:** Cloudflare Workers AI, como ya está. `PROVEEDOR_VOZ` vacío: la voz MeloTTS no se aprobó.
-- **APK de release:** firmado, con `API_URL` apuntando a la URL https del Space.
+  - El workflow compila `flutter build web` con `--base-href /storydraw/` y `--dart-define=(variable del repositorio)`, y publica en Pages al hacer push a `main`.
+  - una opción de configuración debe incluir `https://&lt;usuario&gt;.github.io`.
+- **Correo:** Brevo por SMTP (300 al día gratis), con una opción de configuración y ajustes de modelo.
+- **IA:** Cloudflare Workers AI, como ya está. una opción de configuración vacío: la voz MeloTTS no se aprobó.
+- **APK de release:** firmado, con una opción de configuración apuntando a la URL https del Space.
   - Deja el script y la guía, pero NO generes el keystore de producción: es un secreto, y el autor lo crea siguiendo tu guía.
 
 ENTREGABLES:
 1. Rama nueva desde `main`, con los cambios de código, el workflow de Pages, el README del Space, y un script `desplegar/subir-space.sh` que suba `backend/` al Space con `hf upload`, usando la sesión `hf auth login` del autor, sin tokens en archivos.
 2. `docs/DESPLIEGUE.md`:
    - La tabla de **cada variable**, en qué panel va (secret del Space, variable del Space o variable de GitHub) y qué valor de ejemplo lleva, sin valores reales.
-   - Cómo generar `JWT_SECRETO`.
+   - Cómo generar el secreto de firma de sesiones.
    - El orden de los pasos y cómo verificar (`/health`, crear una cuenta, un cuento completo).
 3. Pruebas en verde: pytest y flutter test. Prueba el adaptador S3 contra MinIO con las opciones nuevas.
 4. Push de la rama y **sin PR**. Commits en español, autor `el autor` con correo noreply, sin coautor y sin mencionar ninguna IA.
 5. Notas: la decisión de despliegue y la bitácora, validado y respaldado.
 
 **No crees** cuentas, Spaces, buckets ni secretos, y **no despliegues**: eso lo hace el autor con tu guía. Responde con la rama, los commits, la ruta de la guía y la lista exacta de variables que el autor debe pegar en cada panel.</pre></details>
-<details id="c14"><summary>Prompt 14 · Ajuste: la guía de despliegue no va en el repo <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: misma rama</p><pre>el autor cambió una cosa del encargo de despliegue: **la guía de despliegue NO va en el repositorio.** Quita `docs/DESPLIEGUE.md` de la rama; si ya la commiteaste, hazlo con un commit nuevo. En su lugar, mándame la guía completa en tu respuesta final: los pasos en orden, la tabla de variables por panel con valores de ejemplo y sin valores reales, cómo generar `JWT_SECRETO` y cómo verificar. Yo se la paso al autor en el chat. Todo lo demás del encargo sigue igual. Si quieres conservarla, puede quedar también en tus notas.</pre></details>
+<details id="c14"><summary>Prompt 14 · Ajuste: la guía de despliegue no va en el repo <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: misma rama</p><pre>el autor cambió una cosa del encargo de despliegue: **la guía de despliegue NO va en el repositorio.** Quita `docs/DESPLIEGUE.md` de la rama; si ya la commiteaste, hazlo con un commit nuevo. En su lugar, mándame la guía completa en tu respuesta final: los pasos en orden, la tabla de variables por panel con valores de ejemplo y sin valores reales, cómo generar el secreto de firma de sesiones y cómo verificar. Yo se la paso al autor en el chat. Todo lo demás del encargo sigue igual. Si quieres conservarla, puede quedar también en tus notas.</pre></details>
 <details id="c15"><summary>Prompt 15 · Ajuste: correo de verificación apagado sin bloquear cuentas <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: misma rama</p><pre>otro ajuste del autor al despliegue: **el envío de correos de verificación no es importante por ahora.** No configures Brevo ni SMTP en producción.
-- Deja el correo apagado (`PROVEEDOR_CORREO=falso` o el equivalente que exista) **sin que eso impida crear cuentas ni iniciar sesión**. Si hoy la verificación por correo bloquea el registro, haz que en producción se pueda omitir por configuración, con prueba.
+- Deja el correo apagado (`falso` o el equivalente que exista) **sin que eso impida crear cuentas ni iniciar sesión**. Si hoy la verificación por correo bloquea el registro, haz que en producción se pueda omitir por configuración, con prueba.
 - Quita Brevo de la guía, o déjalo como paso opcional para más adelante.
 
 Lo demás sigue igual.</pre></details>
@@ -592,12 +592,12 @@ AJUSTES AL ENCARGO DE DESPLIEGUE (misma rama, `feature/despliegue-gratuito`):
 - **Quita** todo lo de Hugging Face Spaces: el README del Space y `desplegar/subir-space.sh`.
 - **Se mantiene:**
   - **Neon** para la base de datos.
-  - El **bucket privado de HF** por S3: `S3_ENDPOINT_URL=https://s3.hf.co/&lt;usuario&gt;`, `S3_BUCKET=StoryDraw`, que ya está creado y es privado.
+  - El **bucket privado de HF** por S3: `https://s3.hf.co/&lt;usuario&gt;`, `StoryDraw`, que ya está creado y es privado.
   - Correo apagado, sin bloquear el registro.
   - Workflow de GitHub Pages, pendiente de decisión del autor.
   - APK de release.
-- `CORS_ORIGENES` debe incluir el dominio de Render (`https://&lt;servicio&gt;.onrender.com`) y el de GitHub Pages.
-- **La guía, en tu respuesta y no en el repositorio:** los pasos en Render (New → Blueprint o Web Service desde el repo), la tabla de variables y cuáles son secretas, cómo generar `JWT_SECRETO`, y cómo verificar con `/salud`, una cuenta y un cuento.
+- una opción de configuración debe incluir el dominio de Render (`https://&lt;servicio&gt;.onrender.com`) y el de GitHub Pages.
+- **La guía, en tu respuesta y no en el repositorio:** los pasos en Render (New → Blueprint o Web Service desde el repo), la tabla de variables y cuáles son secretas, cómo generar el secreto de firma de sesiones, y cómo verificar con `/salud`, una cuenta y un cuento.
 
 Reglas de siempre: commits en español, autor `el autor` con correo noreply, sin coautor y sin mencionar ninguna IA. Push solo de la rama y sin PR. Pruebas en verde. No crees cuentas ni servicios.</pre></details>
 <details id="c17"><summary>Prompt 17 · Voz «javier» de Aura-2 y fondos en armonía con el dibujo <span class="fuente">(2026-11-09)</span></summary><p class="fuente">Resultado: PR #21</p><pre># Prompt 17 · Voz «javier» de Aura-2 y fondos en armonía con el dibujo
@@ -624,9 +624,9 @@ literal: **«Javier, sí me sirve el plan»**.
 
 1. Adaptador nuevo de `IVoz` para **Cloudflare Workers AI `@cf/deepgram/aura-2-es`, voz `javier`**,
    MP3 directo del modelo (`encoding: mp3`; si conviene, conserva la conversión a MP3 mono 22 kHz que
-   ya existe, sin perder calidad audible). Configurable por entorno: `PROVEEDOR_VOZ=cloudflare-aura`
-   (o el nombre que encaje con el patrón actual), `CLOUDFLARE_MODELO_VOZ=@cf/deepgram/aura-2-es`,
-   `CLOUDFLARE_VOZ=javier`. Mismas credenciales de Cloudflare que ya usa el backend. Documenta en
+   ya existe, sin perder calidad audible). Configurable por entorno: `cloudflare-aura`
+   (o el nombre que encaje con el patrón actual), `@cf/deepgram/aura-2-es`,
+   `javier`. Mismas credenciales de Cloudflare que ya usa el backend. Documenta en
    `.env.example`. MeloTTS queda como opción, no como predeterminada.
 2. Aura-2 aplica el ritmo según el texto: pasa el texto de cada página bien puntuado (frases
    completas, comas donde respira un narrador), sin marcas ni emojis.
@@ -706,7 +706,7 @@ reinicia a las **00:00 UTC (19:00 Colombia)**. Por eso:
 ## Qué hacer
 
 ### Voz limitada (plan gratuito)
-1. Tope diario de cuentos con voz configurable (`VOZ_CUENTOS_POR_DIA`, por defecto **3**), contado en
+1. Tope diario de cuentos con voz configurable (una opción de configuración, por defecto **3**), contado en
 [línea omitida en la versión pública: límites o configuración del proveedor de IA]
    salen **sin voz y sin error**, y la app no muestra el botón de escuchar en ellos (o muestra un aviso
    amable sin texto que el niño deba leer: sigue la nota de UX sin lectura).
@@ -737,12 +737,11 @@ reinicia a las **00:00 UTC (19:00 Colombia)**. Por eso:
 - Misma rama; commit(s) + push, **no abras PR ni mergees**. Commits en español, sin coautor ni
   mención de IA, autor `el autor`.
 - **No toques producción** (Render, Neon, variables). En el informe: la lista exacta de variables
-  para Render (`PROVEEDOR_VOZ=cloudflare-aura`, `VOZ_CUENTOS_POR_DIA=3`, …) y el orden de despliegue.
+  para Render (`cloudflare-aura`, `3`, …) y el orden de despliegue.
 - `pytest`, `ruff` y, si tocas la app, las pruebas de Flutter en verde. Nada de claves en el código.
 - Notas: actualiza las decisiones de voz y fondos con estas frases del autor, bitácora, el resumen de las notas e
   `index.md`; validador en 0 errores; sin respaldo.</pre></details>
-<details id="c19"><summary>Prompt 19 · Tolerar los límites del plan gratuito del proveedor de IA <span class="fuente">(2026-11-19)</span></summary><p class="fuente">Resultado: PR #22</p><pre>[Texto omitido en la versión pública: el prompt describe la configuración de cuentas y límites del proveedor de IA. El autor puede mostrarlo completo al jurado si lo pide.]</pre></details>
-<details id="c20"><summary>Prompt 20 · APK 0.2.0, esta documentación y el QR de la presentación <span class="fuente">(2026-11-23)</span></summary><p class="fuente">Resultado: release v0.2.0-presentacion</p><pre># Prompt 20 · APK 0.2.0, esta documentación y el QR de la presentación
+<details id="c19"><summary>Prompt 19 · APK 0.2.0, esta documentación y el QR de la presentación <span class="fuente">(2026-11-23)</span></summary><p class="fuente">Resultado: release v0.2.0-presentacion</p><pre># Prompt 19 · APK 0.2.0, esta documentación y el QR de la presentación
 
 Eres la única sesión activa del asistente. Arranca con tu resumen de notas, [[storydraw-app]], [[APK de depuracion de StoryDraw]],
 [[Guia de despliegue gratuito de StoryDraw]] y [[Deriva entre la documentacion y el codigo]].
@@ -825,9 +824,9 @@ cada criterio de 1 a 5:
 </section>
 <section id="producto"><h2>Prompts del producto</h2>
 <p>El cuento se pide con esquema JSON estricto (exactamente 3 páginas con <code>texto</code> y <code>escena</code>); la visión devuelve hipótesis y atributos; la moderación, <code>{"apto", "categorias"}</code>. Llama Guard 3 recibe el texto tal cual, sin prompt de sistema propio (usa su taxonomía S1–S14).</p>
-<h3>Visión: identificar el dibujo</h3><p class="fuente"><code>PROMPT_VISION</code> · backend/app/infra/adaptadores/comun.py</p><pre>Eres un asistente amable que mira dibujos hechos por niños de 6 a 12 años. Di qué personaje u objeto principal dibujó el niño. Devuelve de 2 a 4 hipótesis distintas, en español, de 1 a 3 palabras cada una (por ejemplo «un perro», «un dragón»), con una confianza entre 0 y 1. Las hipótesis deben ser cosas diferentes entre sí (por ejemplo «un avión», «un pájaro», «un cohete»), nunca sinónimos ni variantes de la misma palabra (como «una casa» y «una casita»). Sé generoso: es un dibujo infantil, no una foto. Nunca describas a personas reales ni datos personales.
+<h3>Visión: identificar el dibujo</h3><p class="fuente">plantilla de visión · backend/app/infra/adaptadores/comun.py</p><pre>Eres un asistente amable que mira dibujos hechos por niños de 6 a 12 años. Di qué personaje u objeto principal dibujó el niño. Devuelve de 2 a 4 hipótesis distintas, en español, de 1 a 3 palabras cada una (por ejemplo «un perro», «un dragón»), con una confianza entre 0 y 1. Las hipótesis deben ser cosas diferentes entre sí (por ejemplo «un avión», «un pájaro», «un cohete»), nunca sinónimos ni variantes de la misma palabra (como «una casa» y «una casita»). Sé generoso: es un dibujo infantil, no una foto. Nunca describas a personas reales ni datos personales.
 En «atributos» describe solo lo que se ve en el dibujo, en español y en minúsculas: «colores» (de 1 a 4 colores principales del personaje), «elementos» (de 0 a 5 partes o cosas visibles, como «cola larga», «alas», «sol») y «emocion» (una palabra, como «alegre»). No inventes nada que no esté dibujado.</pre>
-<h3>Texto: escribir el cuento (plantilla)</h3><p class="fuente"><code>PROMPT_CUENTO</code> · backend/app/infra/adaptadores/comun.py</p><pre>Eres un autor de cuentos infantiles en español. Escribe un cuento para un niño de {edad} años cuyo protagonista es {personaje}, tal como lo dibujó el niño.
+<h3>Texto: escribir el cuento (plantilla)</h3><p class="fuente">plantilla del cuento · backend/app/infra/adaptadores/comun.py</p><pre>Eres un autor de cuentos infantiles en español. Escribe un cuento para un niño de {edad} años cuyo protagonista es {personaje}, tal como lo dibujó el niño.
 Reglas:
 1. Exactamente {paginas} páginas, de 40 a 70 palabras cada una, con inicio, nudo y final feliz.
 2. Vocabulario adecuado a la edad; frases cortas; tono cálido.
@@ -848,7 +847,7 @@ Reglas:
 5. En «escena», describe en inglés solo el fondo de esa página (lugar, luz, colores y objetos del entorno), sin personajes, personas, animales ni texto, porque el protagonista es el dibujo del niño y se coloca encima. El lugar debe ser el hábitat natural del protagonista: un avión, cohete o ave, en el cielo con nubes; un animal de la selva, en la selva; un animal de granja, en una granja con campo; un pez, ballena o barco, en el mar; un auto, bus o moto, en una ciudad con calles y edificios; un tren, en las vías entre campos y montañas; un dinosaurio, en un valle prehistórico con volcanes; un dragón o castillo, en un reino de montañas; una casa, en un barrio o campo; una flor o árbol, en un jardín o bosque. Si no es ninguno, elige el entorno que mejor le quede. Además, la escena de cada página debe mostrar lo que cuenta el texto de esa página (nubes, un río, un libro sobre una roca, la luna, lluvia). Mantén el mismo lugar y la misma paleta de colores entre páginas para que el estilo sea coherente. Di siempre en la escena la hora y la luz («on a sunny day», «at sunset», «at night under the moon», «underwater», «inside a cozy room»). Deja abajo, en el centro, un suelo o espacio despejado donde se para el protagonista, y pinta el lugar con colores que contrasten con los del protagonista para que se vea bien; nómbralos en positivo («soft blue sky, pale green meadow») y no nombres los colores del protagonista.
 6. Así es el protagonista en el dibujo (colores: naranja; elementos: cola triangular; emoción: alegre). Descríbelo solo con esos rasgos: no inventes otros colores, pelaje, ropa ni partes que no estén en el dibujo.
 7. El niño le puso nombre al protagonista: se llama «Burbuja». Llámalo siempre por ese nombre en el título y en todas las páginas, como un nombre propio.</pre>
-<h3>Moderación: revisión infantil con LLM</h3><p class="fuente"><code>PROMPT_MODERACION</code> · comun.py (la usa moderacion_llama_guard.py junto a Llama Guard 3)</p><pre>Eres un moderador de contenido para una app de cuentos para niños de 6 a 12 años. Lee el texto del usuario y decide si es apto para esa edad. NO es apto si tiene violencia, sangre, armas, muerte, miedo intenso, contenido sexual o romántico, drogas, alcohol, tabaco, autolesiones, odio, insultos, burlas, datos personales (direcciones, teléfonos, nombres completos) o marcas comerciales. Si dudas, NO es apto. Responde solo JSON: {"apto": true|false, "categorias": ["..."]}, con las categorías incumplidas en minúsculas (lista vacía si es apto).</pre>
+<h3>Moderación: revisión infantil con LLM</h3><p class="fuente">plantilla de moderación · comun.py (la usa moderacion_llama_guard.py junto a Llama Guard 3)</p><pre>Eres un moderador de contenido para una app de cuentos para niños de 6 a 12 años. Lee el texto del usuario y decide si es apto para esa edad. NO es apto si tiene violencia, sangre, armas, muerte, miedo intenso, contenido sexual o romántico, drogas, alcohol, tabaco, autolesiones, odio, insultos, burlas, datos personales (direcciones, teléfonos, nombres completos) o marcas comerciales. Si dudas, NO es apto. Responde solo JSON: {"apto": true|false, "categorias": ["..."]}, con las categorías incumplidas en minúsculas (lista vacía si es apto).</pre>
 <h3>Imagen: fondo en lápices de colores</h3><p class="fuente"><code>prompt_fondo(descripcion)</code> · comun.py</p><pre>Colored pencil and crayon illustration from a children's storybook, hand-drawn outlines, simple shapes, cheerful colors, grainy paper texture, flat 2D naive style like a picture book, not photorealistic, not 3D. Scene: &lt;escena del cuento&gt;. &lt;guía de color&gt;. Wordless picture-book illustration with blank, unmarked surfaces; no characters, no people, no animals.</pre>
 <h3>Imagen: guía de color que se agrega a la escena (ejemplo real: el pez naranja, bajo el agua)</h3><p class="fuente"><code>armonia.guia_de_color(analizar(recorte), ambiente='bajo_agua', aire=True)</code> · backend/app/dominio/armonia.py</p><pre>(paleta del dibujo: rojo)
 Background color palette: turquoise, aqua and teal water with green seaweed; soft light rays through the water; a wide, open, uncluttered area of open water in the center.</pre>
