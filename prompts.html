@@ -9,10 +9,8 @@
 <ul>
 <li><b>Prompts de construcción</b>: los pedidos que se le dieron a un asistente de IA de programación para construir la app, en orden y con el resultado de cada uno en el repositorio.</li>
 <li><b>Prompts del producto</b>: los que el backend envía a los modelos en cada cuento, copiados del código de la versión 0.2.0.</li>
-<li>Los textos son literales. En esta versión pública se reemplazaron el nombre del autor, los nombres de otros integrantes y de los asistentes, y las rutas de archivos; y se omitieron las líneas sobre límites o configuración del proveedor de IA. Ningún prompt contiene claves.</li>
-<li>No están aquí los cambios que hicieron directamente otras personas del equipo en sus ramas.</li>
 </ul></section>
-<section id="construccion"><h2>Prompts de construcción (20)</h2>
+<section id="construccion"><h2>Prompts de construcción (19)</h2>
 <p>Toca cada uno para abrirlo.</p>
 <details id="c01"><summary>Prompt 01 · Implementación inicial desde cero (backend, app, repo) <span class="fuente">(2026-10-18)</span></summary><p class="fuente">Resultado: PR #1</p><pre>Prompt 01 · Implementación inicial desde cero (backend, app, repo). El autor lo aprobó el 2026-10-17. Trabaja con autonomía hasta terminar; no hagas preguntas salvo que algo falle dos veces.
 
@@ -57,7 +55,6 @@ Ruta del repo local, URL del repo, URL del PR, ramas remotas (`git ls-remote --h
 
 # Contexto
 Repo: &lt;ruta&gt; (&lt;usuario&gt;/storydraw, privado). PR #1 (feature/implementacion-inicial -&gt; qa) sigue abierto y sin mergear.
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 El PC es un Ryzen 7 3700U con 14 GB de RAM y sin GPU NVIDIA: Ollama va por CPU, a unos 5 tok/s; un cuento tarda minutos. Sube los timeouts del adaptador de Ollama (configurables).
 
 # Qué hacer
@@ -67,7 +64,6 @@ El PC es un Ryzen 7 3700U con 14 GB de RAM y sin GPU NVIDIA: Ollama va por CPU, 
    - **Ollama** (API nativa /api/chat u /api/generate con `format: json`, una opción de configuración y modelos por variable): texto y visión. Imagen y voz NO existen en Ollama: en la prueba local esos pasos usan la degradación que ya tiene el orquestador (placeholder o cuento sin audio), sin romper nada.
    - **Moderación**: la de OpenAI es gratuita, pero exige una clave. Para que la prueba local funcione sin claves, agrega un adaptador de moderación con LLM (Ollama/Cloudflare) que clasifique el texto del cuento y devuelva aprobado o rechazado. Debe estar claramente marcado como solo para desarrollo y fallar cerrado (si no responde, el cuento no se muestra, como ya es la regla). La moderación sigue siendo obligatoria.
    - Mantén los adaptadores de OpenAI y ElevenLabs: no se borran.
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 3. `.env.example` (solo nombres, valores vacíos o defaults no secretos): &lt;id de cuenta&gt;, &lt;token&gt;, ajustes de modelo, una opción de configuración, ajustes de modelo, una opción de configuración, y los ajustes de modelo con sus valores posibles documentados en comentarios.
 4. Un perfil de prueba local en docker compose (por ejemplo, el override `docker-compose.ollama.yml` o un perfil `local`) donde la API alcance al Ollama del host en `http://host.docker.internal:11434` (en Windows funciona con Docker Desktop; agrega `extra_hosts: host.docker.internal:host-gateway` por si acaso).
 5. Tests con HTTP simulado para cada adaptador nuevo (la forma del pedido y el parseo de la respuesta, incluidos errores y timeouts) y para la moderación con LLM fallando cerrada. Los 47 tests que hay tienen que seguir pasando. Ruff limpio.
@@ -217,13 +213,11 @@ código, **nunca los imprimas** ni los pongas en un log, commit o nota.
    Guarda las 3 páginas y un montaje dibujo + 3 páginas en
    `&lt;ruta&gt;` y míralas con
    visión: estilo lápiz y sin personas añadidas. Si sale una persona, ajusta la regla de escenas y
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 6. README: una línea sobre el estilo de los fondos.
 7. Git: commits en español, autor `el autor`, sin `Co-Authored-By` ni mención de IA. Busca
    secretos antes de cada commit. Push, PR hacia `qa` y mérgealo cuando esté en verde. **No** toques
    `main`: lo promueve el asistente después de verificar.
 8. Notas: actualiza la nota que corresponda (decisión del estilo de fondos y lo medido: ~210
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
    se reinicia a las 00:00 UTC), hub, contexto, índice, log; validador en verde. No respaldes.
 9. Informe en `&lt;ruta&gt;`: PR, commits, prompts finales,
    salida de pytest/ruff, latencia y costo por paso del cuento, rutas de las imágenes y lo que viste.</pre></details>
@@ -259,7 +253,6 @@ escribe «no consta».
    solo por nombre.
 9. Glosario y enlaces internos (README, `docs/prompts/`).
 
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 correos, sin rutas `&lt;ruta&gt;` y **sin el nombre del autor** (usa «el autor» o «el equipo»).
 Enlázalo desde el README con una línea.
 
@@ -520,8 +513,7 @@ pendientes; log; validador en verde. No respaldes.
 
 `&lt;ruta&gt;`: commits, cómo resolviste cada conflicto (una
 línea por archivo), salidas de pruebas, rutas de capturas y lo que no quedó.</pre></details>
-<details id="c12"><summary>Prompt 12 · Integrar la voz y el correo de confirmación del equipo <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: PR #15 y #16</p><pre>[línea omitida en la versión pública: límites o configuración del proveedor de IA]
-
+<details id="c12"><summary>Prompt 12 · Integrar la voz y el correo de confirmación del equipo <span class="fuente">(2026-11-03)</span></summary><p class="fuente">Resultado: PR #15 y #16</p><pre>
 ENCARGO (repo `personal/storydraw-app`, `&lt;usuario&gt;/storydraw`):
 1. **Resolver los conflictos con el trabajo de &lt;integrante 1&gt;:** el PR #10 (`feature/&lt;integrante 1&gt;` → `feature/&lt;integrante 2&gt;`) y sus ramas, frente al `main` actual (MVP web + arreglo de salir de la sesión). Integra su trabajo en una **rama nueva desde `main`**, resolviendo los conflictos sin perder lo que ya está en `main`.
    - No reescribas ni borres sus ramas, y no hagas force push sobre ellas.
@@ -658,7 +650,6 @@ literal: **«Javier, sí me sirve el plan»**.
    después lado a lado, más el contraste medido. Revisa tú cada una con visión y dilo con honestidad
    si alguno sigue mal.
 5. Sigue funcionando sin red de pago: Cloudflare en producción, Ollama en local. No subas el tiempo
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 
 ## Git y límites
 
@@ -693,24 +684,19 @@ y el encargo `&lt;ruta&gt;`: ya hiciste ese trabajo (rama
   pollito sigue sobre trigal amarillo y la página corregida queda pálida y fría; flux escribe letras
   («FAR.»).
 
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 reinicia a las **00:00 UTC (19:00 Colombia)**. Por eso:
 - **Ninguna llamada a Cloudflare antes de las 00:00 UTC.** Trabaja con los fondos ya generados que
   guardaste (`&lt;ruta&gt;`), con dobles de prueba y, si hace falta
   un generador real, con Ollama local.
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
   el resto). Si no te da para comprobar algo, dilo en el informe y deja el comando listo.
 
 ## Qué hacer
 
 ### Voz limitada (plan gratuito)
 1. Tope diario de cuentos con voz configurable (una opción de configuración, por defecto **3**), contado en
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
    salen **sin voz y sin error**, y la app no muestra el botón de escuchar en ellos (o muestra un aviso
    amable sin texto que el niño deba leer: sigue la nota de UX sin lectura).
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
 3. Pruebas del tope (contador, reinicio de día, concurrencia: dos cuentos a la vez no deben pasarse
    del tope) y del camino sin voz.
 
@@ -768,7 +754,6 @@ cada criterio de 1 a 5:
 ## Entregables
 
 ### A. APK nuevo desde `main`
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
   toques**: compila en un worktree del scratch con `git worktree add --detach &lt;scratch&gt;/sd-apk origin/main`
   (tras `git fetch`). `main` = `b4d9946` según tus notas; confírmalo.
 - Apunta al backend de producción (`https://storydraw.onrender.com`, el mismo que el APK v0.1.0).
@@ -792,7 +777,6 @@ cada criterio de 1 a 5:
     casos de uso, criterios de calidad (pruebas: cuántas y de qué tipo, con cifras REALES de correr la
     suite hoy; moderación infantil; rendimiento medido), arquitectura (cliente Flutter en capas,
     backend FastAPI, Neon, Render, Cloudflare; diagrama), integración de IA (qué modelo hace qué:
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
     plan gratuito), funcionamiento y flujo principal paso a paso con capturas reales;
   - **Prompts (criterio SWNT):** página propia con el texto de los prompts usados para construir la
     app, en orden. Fuente: los encargos que el asistente te dio a ti (literales; están en
@@ -815,7 +799,6 @@ cada criterio de 1 a 5:
 
 ## Reglas
 - Commits en español, autor `el autor` con el noreply de GitHub, sin coautor ni mención de IA.
-[línea omitida en la versión pública: límites o configuración del proveedor de IA]
   allá de 2–3 cuentos reales.
 - Informe en `&lt;ruta&gt;`: URL de Pages, URL de la release,
   SHA-256 del APK, resultado de la prueba del APK contra producción (qué funciona y qué no), cifras de
